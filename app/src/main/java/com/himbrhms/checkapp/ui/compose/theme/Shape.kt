@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.ui.theme
+package com.himbrhms.checkapp.ui.compose.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
