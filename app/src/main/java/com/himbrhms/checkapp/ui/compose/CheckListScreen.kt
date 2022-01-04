@@ -64,7 +64,7 @@ fun CheckListScreen(
         }
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().padding(2.dp)
         ) {
             items(checkList.value) { checkListItem ->
                 CheckListItem(

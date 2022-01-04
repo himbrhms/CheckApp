@@ -3,10 +3,13 @@ package com.himbrhms.checkapp.ui.compose
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.himbrhms.checkapp.common.events.EditCheckListItemEvent
@@ -22,7 +25,7 @@ fun EditCheckListItemScreen(
     val scaffoldState = rememberScaffoldState()
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
-            when(event) {
+            when (event) {
                 is UiEvent.PopBackstack -> onPopBackStack()
                 is UiEvent.ShowSnackBar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
@@ -34,6 +37,18 @@ fun EditCheckListItemScreen(
             }
         }
     }
+    EditCheckListItemScaffold(scaffoldState, viewModel.title, viewModel.description) { event ->
+        viewModel.onEvent(event)
+    }
+}
+
+@Composable
+fun EditCheckListItemScaffold(
+    scaffoldState: ScaffoldState,
+    title: String,
+    description: String,
+    onEventCallback: (EditCheckListItemEvent) -> Unit
+) {
     Scaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier
@@ -41,7 +56,7 @@ fun EditCheckListItemScreen(
             .padding(16.dp),
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                viewModel.onEvent(EditCheckListItemEvent.OnSaveItem)
+                onEventCallback(EditCheckListItemEvent.OnSaveItem)
             }) {
                 Icon(
                     imageVector = Icons.Default.Check,
@@ -54,9 +69,9 @@ fun EditCheckListItemScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             TextField(
-                value = viewModel.title,
+                value = title,
                 onValueChange = {
-                    viewModel.onEvent(EditCheckListItemEvent.OnTitleChange(it))
+                    onEventCallback(EditCheckListItemEvent.OnTitleChange(it))
                 },
                 placeholder = {
                     Text(text = "Title")
@@ -65,17 +80,31 @@ fun EditCheckListItemScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextField(
-                value = viewModel.description,
+                value = description,
                 onValueChange = {
-                    viewModel.onEvent(EditCheckListItemEvent.OnDescriptionChange(it))
+                    onEventCallback(EditCheckListItemEvent.OnDescriptionChange(it))
                 },
                 placeholder = {
-                    Text(text = "Description")
+                    Text(text = "Notes")
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                 singleLine = false,
-                maxLines = 5
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun EditCheckListItemScreenPreview() {
+    EditCheckListItemScaffold(
+        scaffoldState = ScaffoldState(
+            drawerState = DrawerState(DrawerValue.Open),
+            snackbarHostState = SnackbarHostState()
+        ),
+        title = "Preview",
+        description = "PreviewDescription"
+    ) {
+        EditCheckListItemEvent.OnSaveItem
     }
 }

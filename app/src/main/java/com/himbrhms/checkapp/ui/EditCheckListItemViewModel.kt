@@ -31,6 +31,9 @@ class EditCheckListItemViewModel @Inject constructor(
     var description by mutableStateOf("")
         private set
 
+    var color by mutableStateOf(0xFFFFFFL)
+        private set
+
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
@@ -68,11 +71,15 @@ class EditCheckListItemViewModel @Inject constructor(
                             title = title,
                             description = description,
                             isChecked = item?.isChecked ?: false,
-                            id = item?.id
+                            id = item?.id,
+                            backColorValue = color
                         )
                     )
                     sendUiEventAsync(UiEvent.PopBackstack)
                 }
+            }
+            is EditCheckListItemEvent.OnColorChange -> {
+                color = event.colorValue
             }
         }
     }
