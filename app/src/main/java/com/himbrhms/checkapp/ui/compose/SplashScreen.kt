@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.ui
+package com.himbrhms.checkapp.ui.compose
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.himbrhms.checkapp.R
+import com.himbrhms.checkapp.common.Routes
 import kotlinx.coroutines.delay
 
 @Composable
@@ -32,7 +33,7 @@ fun SplashScreen(navController: NavController) {
                 })
         )
         delay(1000L)
-        navController.navigate("main_screen")
+        navController.navigate(Routes.TODO_LIST)
     }
 
     Box(

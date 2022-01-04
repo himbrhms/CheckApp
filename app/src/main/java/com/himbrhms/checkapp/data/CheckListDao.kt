@@ -11,14 +11,14 @@ import kotlinx.coroutines.flow.Flow
 interface CheckListDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertToDo(item: CheckListItemData)
+    suspend fun insertItem(item: CheckListItemData)
 
     @Delete
-    suspend fun deleteToDo(item: CheckListItemData)
+    suspend fun deleteItem(item: CheckListItemData)
 
-    @Query("SELECT * FROM checklistitem WHERE id = :id")
-    suspend fun getToDo(id: Int): CheckListItemData?
+    @Query("SELECT * FROM CheckListItemData WHERE id = :id")
+    suspend fun getItem(id: Int): CheckListItemData?
 
-    @Query("SELECT * FROM checklistitem")
-    fun getAllToDo(): Flow<List<CheckListItemData>>
+    @Query("SELECT * FROM CheckListItemData")
+    fun getCheckList(): Flow<List<CheckListItemData>>
 }

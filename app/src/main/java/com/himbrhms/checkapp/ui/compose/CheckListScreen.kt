@@ -19,16 +19,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.himbrhms.checkapp.common.events.CheckListEvent
 import com.himbrhms.checkapp.common.events.UiEvent
 import com.himbrhms.checkapp.ui.CheckListViewModel
+import com.himbrhms.checkapp.util.Logger
 import kotlinx.coroutines.flow.collect
 
 @Composable
-fun TodoListScreen(
-    onNavigate: (UiEvent.Navigate) -> Unit,
+fun CheckListScreen(
+    onNavigate: (UiEvent.NavigateEvent) -> Unit,
     viewModel: CheckListViewModel = hiltViewModel()
 ) {
+    val logger = Logger("CheckListScreen")
     val checkList = viewModel.toDoList.collectAsState(initial = emptyList())
     val scaffoldState = rememberScaffoldState()
     LaunchedEffect(key1 = true) {
+        logger.info("LaunchedEffect")
         viewModel.uiEvent.collect { event ->
             when(event) {
                 is UiEvent.ShowSnackBar -> {
@@ -40,7 +43,9 @@ fun TodoListScreen(
                         viewModel.onCheckListEvent(CheckListEvent.OnDeleteUndo)
                     }
                 }
-                is UiEvent.Navigate -> onNavigate(event)
+                is UiEvent.NavigateEvent -> {
+                    onNavigate(event)
+                }
                 else -> Unit
             }
         }

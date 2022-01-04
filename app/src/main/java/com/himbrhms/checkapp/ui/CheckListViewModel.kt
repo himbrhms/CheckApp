@@ -2,7 +2,7 @@ package com.himbrhms.checkapp.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.himbrhms.checkapp.common.RoutePaths
+import com.himbrhms.checkapp.common.Routes
 import com.himbrhms.checkapp.common.events.CheckListEvent
 import com.himbrhms.checkapp.common.events.UiEvent
 import com.himbrhms.checkapp.data.CheckListRepo
@@ -30,7 +30,7 @@ class CheckListViewModel @Inject constructor(
         private val logger = Logger(this::class.className)
     }
 
-    val toDoList = repo.getToDoList()
+    val toDoList = repo.getCheckList()
 
     private val _uiEvent: Channel<UiEvent> = Channel<UiEvent>()
     val uiEvent: Flow<UiEvent> = _uiEvent.receiveAsFlow()
@@ -42,24 +42,24 @@ class CheckListViewModel @Inject constructor(
             is OnAddItem -> {
                 logger.info("onCheckListEvent(${event::class.simpleName})")
                 sendUiEventAsync(
-                    UiEvent.Navigate(RoutePaths.ADD_EDIT_TODO + "?itemId=${event.item.id}")
+                    UiEvent.NavigateEvent(Routes.ADD_EDIT_TODO)
                 )
             }
             is OnClickItem -> {
                 logger.info("onCheckListEvent(${event::class.simpleName})")
-                sendUiEventAsync(UiEvent.Navigate(RoutePaths.ADD_EDIT_TODO))
+                sendUiEventAsync(UiEvent.NavigateEvent(Routes.ADD_EDIT_TODO  + "?itemId=${event.item.id}"))
             }
             is OnChangeChecked -> {
                 logger.info("onCheckListEvent(${event::class.simpleName})")
                 viewModelScope.launch {
-                    repo.insertToDo(event.item.copy(isChecked = event.newIsChecked))
+                    repo.insertItem(event.item.copy(isChecked = event.newIsChecked))
                 }
             }
             is OnDeleteItem -> {
                 logger.info("onCheckListEvent(${event::class.simpleName})")
                 viewModelScope.launch {
                     recentlyDeletedItem = event.item
-                    repo.deleteToDo(event.item)
+                    repo.deleteItem(event.item)
                 }
                 sendUiEventAsync(
                     UiEvent.ShowSnackBar(
@@ -71,7 +71,7 @@ class CheckListViewModel @Inject constructor(
             is OnDeleteUndo -> {
                 logger.info("onCheckListEvent(${event::class.simpleName})")
                 recentlyDeletedItem?.let { toDo ->
-                    viewModelScope.launch { repo.insertToDo(toDo) }
+                    viewModelScope.launch { repo.insertItem(toDo) }
                 }
             }
         }

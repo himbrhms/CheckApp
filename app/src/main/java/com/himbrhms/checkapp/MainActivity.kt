@@ -3,14 +3,21 @@ package com.himbrhms.checkapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Surface
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import com.himbrhms.checkapp.ui.Navigation
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.himbrhms.checkapp.common.Routes
+import com.himbrhms.checkapp.ui.compose.CheckListScreen
+import com.himbrhms.checkapp.ui.compose.EditCheckListItemScreen
+import com.himbrhms.checkapp.ui.compose.Navigation
+import com.himbrhms.checkapp.ui.compose.theme.CheckAppTheme
 import com.himbrhms.checkapp.util.Logger
 import com.himbrhms.checkapp.util.className
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     companion object {
@@ -21,7 +28,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         logger.debug("onCreate")
         setContent {
-            Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
+            CheckAppTheme {
                 Navigation()
             }
         }

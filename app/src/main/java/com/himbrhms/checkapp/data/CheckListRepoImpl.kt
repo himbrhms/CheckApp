@@ -4,11 +4,11 @@ import kotlinx.coroutines.flow.Flow
 
 class CheckListRepoImpl(private val toDoDao: CheckListDao) : CheckListRepo {
 
-    override suspend fun insertToDo(item: CheckListItemData) = toDoDao.insertToDo(item)
+    override suspend fun insertItem(item: CheckListItemData) = toDoDao.insertItem(item)
 
-    override suspend fun deleteToDo(item: CheckListItemData) = toDoDao.deleteToDo(item)
+    override suspend fun deleteItem(item: CheckListItemData) = toDoDao.deleteItem(item)
 
-    override suspend fun getToDo(id: Int): CheckListItemData? = toDoDao.getToDo(id)
+    override suspend fun getItem(id: Int): CheckListItemData? = toDoDao.getItem(id)
 
-    override fun getToDoList(): Flow<List<CheckListItemData>> = toDoDao.getAllToDo()
+    override fun getCheckList(): Flow<List<CheckListItemData>> = toDoDao.getCheckList()
 }
