@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     version = 1,
-    entities = [CheckListItem::class],
+    entities = [CheckListItemData::class],
 )
 abstract class CheckListDatabase : RoomDatabase() {
 

@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class CheckListItem(
+data class CheckListItemData(
     @PrimaryKey val id: Int? = null,
     val title: String,
     val description: String = "",

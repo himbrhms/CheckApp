@@ -6,7 +6,7 @@ import com.himbrhms.checkapp.common.RoutePaths
 import com.himbrhms.checkapp.common.events.CheckListEvent
 import com.himbrhms.checkapp.common.events.UiEvent
 import com.himbrhms.checkapp.data.CheckListRepo
-import com.himbrhms.checkapp.data.CheckListItem
+import com.himbrhms.checkapp.data.CheckListItemData
 import com.himbrhms.checkapp.common.events.CheckListEvent.OnAddItem
 import com.himbrhms.checkapp.common.events.CheckListEvent.OnChangeChecked
 import com.himbrhms.checkapp.common.events.CheckListEvent.OnClickItem
@@ -35,7 +35,7 @@ class CheckListViewModel @Inject constructor(
     private val _uiEvent: Channel<UiEvent> = Channel<UiEvent>()
     val uiEvent: Flow<UiEvent> = _uiEvent.receiveAsFlow()
 
-    private var recentlyDeletedItem: CheckListItem? = null
+    private var recentlyDeletedItem: CheckListItemData? = null
 
     fun onCheckListEvent(event: CheckListEvent) {
         when (event) {

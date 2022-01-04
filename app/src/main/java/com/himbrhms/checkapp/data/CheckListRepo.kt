@@ -4,11 +4,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface CheckListRepo {
 
-    suspend fun insertToDo(item: CheckListItem)
+    suspend fun insertToDo(item: CheckListItemData)
 
-    suspend fun deleteToDo(item: CheckListItem)
+    suspend fun deleteToDo(item: CheckListItemData)
 
-    suspend fun getToDo(id: Int): CheckListItem?
+    suspend fun getToDo(id: Int): CheckListItemData?
 
-    fun getToDoList(): Flow<List<CheckListItem>>
+    fun getToDoList(): Flow<List<CheckListItemData>>
 }
