@@ -42,12 +42,12 @@ class CheckListViewModel @Inject constructor(
             is OnAddItem -> {
                 logger.info("onCheckListEvent(${event::class.simpleName})")
                 sendUiEventAsync(
-                    UiEvent.NavigateEvent(Routes.ADD_EDIT_TODO)
+                    UiEvent.NavigateEvent(Routes.EDIT_ITEM_SCREEN)
                 )
             }
             is OnClickItem -> {
                 logger.info("onCheckListEvent(${event::class.simpleName})")
-                sendUiEventAsync(UiEvent.NavigateEvent(Routes.ADD_EDIT_TODO  + "?itemId=${event.item.id}"))
+                sendUiEventAsync(UiEvent.NavigateEvent(Routes.EDIT_ITEM_SCREEN  + "?itemId=${event.item.id}"))
             }
             is OnChangeChecked -> {
                 logger.info("onCheckListEvent(${event::class.simpleName})")

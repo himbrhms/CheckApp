@@ -1,22 +1,26 @@
 package com.himbrhms.checkapp.ui.compose
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.himbrhms.checkapp.common.Routes
+import com.himbrhms.checkapp.common.Routes.CHECKLIST_SCREEN
+import com.himbrhms.checkapp.common.Routes.EDIT_ITEM_SCREEN
+import com.himbrhms.checkapp.common.Routes.SPLASH_SCREEN
 
 @Composable
-fun Navigation() {
+fun Navigation(isStartup: Boolean) {
+    val startScreen = if (isStartup) SPLASH_SCREEN else CHECKLIST_SCREEN
     val navController = rememberNavController()
     NavHost(navController = navController,
-        startDestination = "splash_screen") {
-        composable("splash_screen") {
+        startDestination = startScreen) {
+        composable(SPLASH_SCREEN) {
             SplashScreen(navController = navController)
         }
-        composable(Routes.TODO_LIST) {
+        composable(CHECKLIST_SCREEN) {
             CheckListScreen(
                 onNavigate = { navigateEvent ->
                     navController.navigate(navigateEvent.route)
@@ -24,7 +28,7 @@ fun Navigation() {
             )
         }
         composable(
-            route = Routes.ADD_EDIT_TODO + "?itemId={itemId}",
+            route = "$EDIT_ITEM_SCREEN?itemId={itemId}",
             arguments = listOf(
                 navArgument(name = "itemId") {
                     type = NavType.IntType
