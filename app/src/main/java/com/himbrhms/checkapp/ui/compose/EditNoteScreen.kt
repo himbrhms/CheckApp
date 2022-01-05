@@ -3,12 +3,17 @@ package com.himbrhms.checkapp.ui.compose
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -60,16 +65,16 @@ fun EditItemScaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(10.dp),
         floatingActionButton = {
             Column() {
-                EditFloatingActionButton(
+                NoteFloatingActionButton(
                     onEvent = { onEvent(EditNoteEvent.OnColorizeBottomSheet) },
                     drawableRes = R.drawable.ic_outline_color_lens_24,
                     description = "Colorize"
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                EditFloatingActionButton(
+                NoteFloatingActionButton(
                     onEvent = { onEvent(EditNoteEvent.OnColorizeBottomSheet) },
                     drawableRes = R.drawable.ic_outline_add_photo_alternate_24,
                     description = "Add Picture"
@@ -78,7 +83,11 @@ fun EditItemScaffold(
         }
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .border(width = 2.dp, color = Color.LightGray, shape = RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(16.dp))
+                .shadow(elevation = 10.dp)
         ) {
             TextField(
                 value = title,
@@ -102,25 +111,6 @@ fun EditItemScaffold(
                 )
             )
         }
-    }
-}
-
-@Composable
-private fun EditFloatingActionButton(
-    onEvent: (EditNoteEvent) -> Unit,
-    @DrawableRes drawableRes: Int,
-    description: String
-) {
-    FloatingActionButton(
-        onClick = { onEvent },
-        modifier = Modifier.scale(0.8f),
-        backgroundColor = Color.DesertSand,
-    ) {
-        Icon(
-            painterResource(id = drawableRes),
-            contentDescription = description,
-            modifier = Modifier.scale(1.4f)
-        )
     }
 }
 

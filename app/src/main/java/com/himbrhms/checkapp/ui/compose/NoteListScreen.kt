@@ -14,11 +14,16 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.himbrhms.checkapp.R
 import com.himbrhms.checkapp.common.events.NoteListEvent
 import com.himbrhms.checkapp.common.events.UiEvent
 import com.himbrhms.checkapp.ui.NoteListViewModel
+import com.himbrhms.checkapp.ui.util.DesertSand
 import com.himbrhms.checkapp.util.Logger
 import kotlinx.coroutines.flow.collect
 
@@ -27,19 +32,17 @@ fun NoteListScreen(
     onNavigate: (UiEvent.NavigateEvent) -> Unit,
     viewModel: NoteListViewModel = hiltViewModel()
 ) {
-    val logger = Logger("NoteListScreen")
     val noteList = viewModel.noteList.collectAsState(initial = emptyList())
     val scaffoldState = rememberScaffoldState()
     LaunchedEffect(key1 = true) {
-        logger.info("LaunchedEffect")
         viewModel.uiEvent.collect { event ->
-            when(event) {
+            when (event) {
                 is UiEvent.ShowSnackBar -> {
                     val result = scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message,
                         actionLabel = event.action
                     )
-                    if(result == SnackbarResult.ActionPerformed) {
+                    if (result == SnackbarResult.ActionPerformed) {
                         viewModel.onNoteListEvent(NoteListEvent.OnDeleteNoteUndo)
                     }
                 }
@@ -53,18 +56,23 @@ fun NoteListScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                viewModel.onNoteListEvent(NoteListEvent.OnAddNote)
-            }) {
+            FloatingActionButton(
+                onClick = { viewModel.onNoteListEvent(NoteListEvent.OnAddNote) },
+                modifier = Modifier.scale(0.8f),
+                backgroundColor = Color.DesertSand,
+            ) {
                 Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add"
+                    painterResource(id = R.drawable.ic_baseline_post_add_24),
+                    contentDescription = "Add Note",
+                    modifier = Modifier.scale(1.4f)
                 )
             }
         }
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(2.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(2.dp)
         ) {
             items(noteList.value) { noteItem ->
                 NoteItem(

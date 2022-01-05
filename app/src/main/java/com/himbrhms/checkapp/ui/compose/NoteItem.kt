@@ -32,8 +32,8 @@ fun NoteItem(
     Box(
         modifier = Modifier
             .padding(2.dp)
-            .border(BorderStroke(2.dp, Color.Black))
-            .clip(RoundedCornerShape(4.dp))
+            .border(width = 2.dp, color = Color.LightGray, shape = RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(10.dp))
             .background(Color(item.backColorValue))
     ) {
         Row(
