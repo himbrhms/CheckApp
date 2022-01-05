@@ -3,7 +3,7 @@ package com.himbrhms.checkapp.ui.compose
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import com.himbrhms.checkapp.data.CheckListItemData
+import com.himbrhms.checkapp.data.Note
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Checkbox
@@ -16,19 +16,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.himbrhms.checkapp.common.events.CheckListEvent
+import com.himbrhms.checkapp.common.events.NoteListEvent
 
 @Composable
-fun CheckListItem(
-    item: CheckListItemData,
-    onEvent: (CheckListEvent) -> Unit,
+fun NoteItem(
+    item: Note,
+    onEvent: (NoteListEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -56,7 +54,7 @@ fun CheckListItem(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     IconButton(onClick = {
-                        onEvent(CheckListEvent.OnDeleteItem(item))
+                        onEvent(NoteListEvent.OnDeleteNote(item))
                     }) {
                         Icon(
                             imageVector = Icons.Default.Delete,
@@ -64,7 +62,7 @@ fun CheckListItem(
                         )
                     }
                 }
-                item.description.let {
+                item.notes.let {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(text = it)
                 }
@@ -72,7 +70,7 @@ fun CheckListItem(
             Checkbox(
                 checked = item.isChecked,
                 onCheckedChange = { isChecked ->
-                    onEvent(CheckListEvent.OnChangeChecked(item, isChecked))
+                    onEvent(NoteListEvent.OnChangeChecked(item, isChecked))
                 }
             )
         }
@@ -82,15 +80,15 @@ fun CheckListItem(
 @Preview
 @Composable
 fun ComposablePreview() {
-    CheckListItem(
-        CheckListItemData(
+    NoteItem(
+        Note(
             id = 1,
             title = "Preview",
-            description = "PreviewDescription",
+            notes = "PreviewDescription",
             true
         ),
         {
-            CheckListEvent.OnAddItem
+            NoteListEvent.OnAddNote
         }
     )
 }

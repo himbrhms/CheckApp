@@ -6,10 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.himbrhms.checkapp.common.events.EditCheckListItemEvent
+import com.himbrhms.checkapp.common.events.EditNoteEvent
 import com.himbrhms.checkapp.common.events.UiEvent
-import com.himbrhms.checkapp.data.CheckListItemData
-import com.himbrhms.checkapp.data.CheckListRepo
+import com.himbrhms.checkapp.data.Note
+import com.himbrhms.checkapp.data.NoteListRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -17,12 +17,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EditCheckListItemViewModel @Inject constructor(
-    private val repo: CheckListRepo,
+class EditNoteViewModel @Inject constructor(
+    private val repo: NoteListRepo,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    var item by mutableStateOf<CheckListItemData?>(null)
+    var item by mutableStateOf<Note?>(null)
         private set
 
     var title by mutableStateOf("")
@@ -41,47 +41,46 @@ class EditCheckListItemViewModel @Inject constructor(
         val itemId = savedStateHandle.get<Int>("itemId")!!
         if(itemId != -1) {
             viewModelScope.launch {
-                repo.getItem(itemId)?.let { item ->
+                repo.getNoteById(itemId)?.let { item ->
                     title = item.title
-                    description = item.description ?: ""
-                    this@EditCheckListItemViewModel.item = item
+                    description = item.notes ?: ""
+                    this@EditNoteViewModel.item = item
                 }
             }
         }
     }
 
-    fun onEvent(event: EditCheckListItemEvent) {
+    fun onEvent(event: EditNoteEvent) {
         when(event) {
-            is EditCheckListItemEvent.OnTitleChange -> {
+            is EditNoteEvent.OnTitleChange -> {
                 title = event.title
             }
-            is EditCheckListItemEvent.OnDescriptionChange -> {
+            is EditNoteEvent.OnDescriptionChange -> {
                 description = event.description
             }
-            is EditCheckListItemEvent.OnSaveItem -> {
+            is EditNoteEvent.OnSaveItem -> {
                 viewModelScope.launch {
-                    if(title.isBlank()) {
-                        sendUiEventAsync(UiEvent.ShowSnackBar(
-                            message = "The title can't be empty"
-                        ))
-                        return@launch
-                    }
-                    repo.insertItem(
-                        CheckListItemData(
-                            title = title,
-                            description = description,
-                            isChecked = item?.isChecked ?: false,
-                            id = item?.id,
-                            backColorValue = color
+                    if(!isEmptyItem()) {
+                        repo.insertNote(
+                            Note(
+                                title = title,
+                                notes = description,
+                                isChecked = item?.isChecked ?: false,
+                                id = item?.id,
+                                backColorValue = color
+                            )
                         )
-                    )
+                    } else {
+                        sendUiEventAsync(UiEvent.ShowSnackBar(message = "Empty Note dismissed"))
+                    }
                     sendUiEventAsync(UiEvent.PopBackstack)
                 }
             }
-            is EditCheckListItemEvent.OnColorChange -> {
-                color = event.colorValue
-            }
         }
+    }
+
+    private fun isEmptyItem(): Boolean {
+        return title.isBlank() && description.isBlank()
     }
 
     private fun sendUiEventAsync(event: UiEvent) {

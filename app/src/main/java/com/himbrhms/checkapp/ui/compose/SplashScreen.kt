@@ -36,7 +36,7 @@ fun SplashScreen(navController: NavController) {
                 })
         )
         delay(1000L)
-        navController.navigate(Routes.CHECKLIST_SCREEN) {
+        navController.navigate(Routes.NOTE_LIST_SCREEN) {
             popUpTo(Routes.SPLASH_SCREEN) { // remove SplashScreen from backstack
                 inclusive = true
             }

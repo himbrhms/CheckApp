@@ -16,19 +16,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.himbrhms.checkapp.common.events.CheckListEvent
+import com.himbrhms.checkapp.common.events.NoteListEvent
 import com.himbrhms.checkapp.common.events.UiEvent
-import com.himbrhms.checkapp.ui.CheckListViewModel
+import com.himbrhms.checkapp.ui.NoteListViewModel
 import com.himbrhms.checkapp.util.Logger
 import kotlinx.coroutines.flow.collect
 
 @Composable
-fun CheckListScreen(
+fun NoteListScreen(
     onNavigate: (UiEvent.NavigateEvent) -> Unit,
-    viewModel: CheckListViewModel = hiltViewModel()
+    viewModel: NoteListViewModel = hiltViewModel()
 ) {
-    val logger = Logger("CheckListScreen")
-    val checkList = viewModel.toDoList.collectAsState(initial = emptyList())
+    val logger = Logger("NoteListScreen")
+    val noteList = viewModel.noteList.collectAsState(initial = emptyList())
     val scaffoldState = rememberScaffoldState()
     LaunchedEffect(key1 = true) {
         logger.info("LaunchedEffect")
@@ -40,7 +40,7 @@ fun CheckListScreen(
                         actionLabel = event.action
                     )
                     if(result == SnackbarResult.ActionPerformed) {
-                        viewModel.onCheckListEvent(CheckListEvent.OnDeleteUndo)
+                        viewModel.onNoteListEvent(NoteListEvent.OnDeleteNoteUndo)
                     }
                 }
                 is UiEvent.NavigateEvent -> {
@@ -54,7 +54,7 @@ fun CheckListScreen(
         scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                viewModel.onCheckListEvent(CheckListEvent.OnAddItem)
+                viewModel.onNoteListEvent(NoteListEvent.OnAddNote)
             }) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -66,14 +66,14 @@ fun CheckListScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(2.dp)
         ) {
-            items(checkList.value) { checkListItem ->
-                CheckListItem(
-                    item = checkListItem,
-                    onEvent = viewModel::onCheckListEvent,
+            items(noteList.value) { noteItem ->
+                NoteItem(
+                    item = noteItem,
+                    onEvent = viewModel::onNoteListEvent,
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            viewModel.onCheckListEvent(CheckListEvent.OnClickItem(checkListItem))
+                            viewModel.onNoteListEvent(NoteListEvent.OnClickNote(noteItem))
                         }
                         .padding(16.dp)
                 )
