@@ -71,7 +71,7 @@ class EditNoteViewModel @Inject constructor(
                             )
                         )
                     } else {
-                        sendUiEventAsync(UiEvent.ShowSnackBar(message = "Empty Note dismissed"))
+                        sendUiEventAsync(UiEvent.ShowToast(message = "Empty Note dismissed"))
                     }
                     sendUiEventAsync(UiEvent.PopBackstack)
                 }
