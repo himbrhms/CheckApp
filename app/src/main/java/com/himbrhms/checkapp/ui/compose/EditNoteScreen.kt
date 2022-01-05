@@ -2,8 +2,6 @@ package com.himbrhms.checkapp.ui.compose
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,11 +19,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.himbrhms.checkapp.R
-import com.himbrhms.checkapp.common.events.EditNoteEvent
-import com.himbrhms.checkapp.common.events.UiEvent
-import com.himbrhms.checkapp.ui.EditNoteViewModel
-import com.himbrhms.checkapp.ui.util.DesertSand
-import com.himbrhms.checkapp.ui.util.LightDesertSand
+import com.himbrhms.checkapp.model.events.EditNoteEvent
+import com.himbrhms.checkapp.model.events.UiEvent.ColorizeBottomSheetEvent
+import com.himbrhms.checkapp.model.events.UiEvent.PopBackstackEvent
+import com.himbrhms.checkapp.model.events.UiEvent.ShowToastEvent
+import com.himbrhms.checkapp.model.EditNoteViewModel
+import com.himbrhms.checkapp.ui.theme.DesertSand
+import com.himbrhms.checkapp.ui.theme.LightDesertSand
+import com.himbrhms.checkapp.util.Logger
 import kotlinx.coroutines.flow.collect
 
 @ExperimentalMaterialApi
@@ -34,21 +35,30 @@ fun EditItemScreen(
     onPopBackStack: () -> Unit,
     viewModel: EditNoteViewModel = hiltViewModel()
 ) {
+    val logger = Logger("EditItemScreen")
     val scaffoldState = rememberScaffoldState()
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is UiEvent.PopBackstack -> onPopBackStack()
-                is UiEvent.ShowToast -> {
+                is PopBackstackEvent -> onPopBackStack()
+                is ShowToastEvent -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+                is ColorizeBottomSheetEvent -> {
+                    logger.info("ColorizeBottomSheetEvent: isVisible=${bottomSheetState?.isVisible}")
+                    if (bottomSheetState?.isVisible == true) {
+                        bottomSheetState?.hide()
+                    } else if (bottomSheetState?.isVisible == false) {
+                        bottomSheetState?.show()
+                    }
                 }
                 else -> Unit
             }
         }
     }
     EditItemScaffold(scaffoldState, viewModel.title, viewModel.description) { event ->
-        viewModel.onEvent(event)
+        viewModel.onEditNoteEvent(event)
     }
 }
 
@@ -68,17 +78,28 @@ fun EditItemScaffold(
             .padding(10.dp),
         floatingActionButton = {
             Column() {
-                NoteFloatingActionButton(
-                    onEvent = { onEvent(EditNoteEvent.OnColorizeBottomSheet) },
-                    drawableRes = R.drawable.ic_outline_color_lens_24,
-                    description = "Colorize"
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                NoteFloatingActionButton(
-                    onEvent = { onEvent(EditNoteEvent.OnColorizeBottomSheet) },
-                    drawableRes = R.drawable.ic_outline_add_photo_alternate_24,
-                    description = "Add Picture"
-                )
+                FloatingActionButton(
+                    onClick = { onEvent(EditNoteEvent.OnColorizeBottomSheet) },
+                    modifier = Modifier.scale(0.8f),
+                    backgroundColor = Color.DesertSand,
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_outline_color_lens_24),
+                        contentDescription = "Colorize",
+                        modifier = Modifier.scale(1.4f)
+                    )
+                }
+                FloatingActionButton(
+                    onClick = { onEvent(EditNoteEvent.OnAddImage) },
+                    modifier = Modifier.scale(0.8f),
+                    backgroundColor = Color.DesertSand,
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_outline_add_photo_alternate_24),
+                        contentDescription = "Add Picturee",
+                        modifier = Modifier.scale(1.4f)
+                    )
+                }
             }
         }
     ) {
@@ -111,6 +132,7 @@ fun EditItemScaffold(
                 )
             )
         }
+        ColorizeBottomSheet()
     }
 }
 

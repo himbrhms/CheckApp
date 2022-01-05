@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.ui
+package com.himbrhms.checkapp.model
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -6,10 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.himbrhms.checkapp.common.events.EditNoteEvent
-import com.himbrhms.checkapp.common.events.UiEvent
+import com.himbrhms.checkapp.model.events.EditNoteEvent
+import com.himbrhms.checkapp.model.events.UiEvent
 import com.himbrhms.checkapp.data.Note
 import com.himbrhms.checkapp.data.NoteListRepo
+import com.himbrhms.checkapp.util.Logger
+import com.himbrhms.checkapp.util.className
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -20,7 +22,11 @@ import javax.inject.Inject
 class EditNoteViewModel @Inject constructor(
     private val repo: NoteListRepo,
     savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
+
+    companion object {
+        private val logger = Logger(this::class.className)
+    }
 
     var item by mutableStateOf<Note?>(null)
         private set
@@ -34,12 +40,12 @@ class EditNoteViewModel @Inject constructor(
     var color by mutableStateOf(0xFFFFFFL)
         private set
 
-    private val _uiEvent =  Channel<UiEvent>()
+    private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
         val itemId = savedStateHandle.get<Int>("itemId")!!
-        if(itemId != -1) {
+        if (itemId != -1) {
             viewModelScope.launch {
                 repo.getNoteById(itemId)?.let { item ->
                     title = item.title
@@ -50,8 +56,9 @@ class EditNoteViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: EditNoteEvent) {
-        when(event) {
+    fun onEditNoteEvent(event: EditNoteEvent) {
+        logger.debug("onEvent(${event.name})")
+        when (event) {
             is EditNoteEvent.OnTitleChange -> {
                 title = event.title
             }
@@ -60,7 +67,7 @@ class EditNoteViewModel @Inject constructor(
             }
             is EditNoteEvent.OnSaveItem -> {
                 viewModelScope.launch {
-                    if(!isEmptyItem()) {
+                    if (!isEmptyItem()) {
                         repo.insertNote(
                             Note(
                                 title = title,
@@ -71,11 +78,15 @@ class EditNoteViewModel @Inject constructor(
                             )
                         )
                     } else {
-                        sendUiEventAsync(UiEvent.ShowToast(message = "Empty Note dismissed"))
+                        sendAsyncUiEvent(UiEvent.ShowToastEvent(message = "Empty Note dismissed"))
                     }
-                    sendUiEventAsync(UiEvent.PopBackstack)
+                    sendAsyncUiEvent(UiEvent.PopBackstackEvent)
                 }
             }
+            is EditNoteEvent.OnColorizeBottomSheet -> {
+                sendAsyncUiEvent(UiEvent.ColorizeBottomSheetEvent)
+            }
+            is EditNoteEvent.OnColorChange -> sendAsyncUiEvent(UiEvent.ColorChangeEvent(event.color))
         }
     }
 
@@ -83,7 +94,7 @@ class EditNoteViewModel @Inject constructor(
         return title.isBlank() && description.isBlank()
     }
 
-    private fun sendUiEventAsync(event: UiEvent) {
+    private fun sendAsyncUiEvent(event: UiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
         }

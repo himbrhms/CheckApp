@@ -1,17 +1,17 @@
-package com.himbrhms.checkapp.ui
+package com.himbrhms.checkapp.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.himbrhms.checkapp.common.Routes
-import com.himbrhms.checkapp.common.events.NoteListEvent
-import com.himbrhms.checkapp.common.events.UiEvent
+import com.himbrhms.checkapp.model.events.NoteListEvent
+import com.himbrhms.checkapp.model.events.UiEvent
 import com.himbrhms.checkapp.data.NoteListRepo
 import com.himbrhms.checkapp.data.Note
-import com.himbrhms.checkapp.common.events.NoteListEvent.OnAddNote
-import com.himbrhms.checkapp.common.events.NoteListEvent.OnChangeChecked
-import com.himbrhms.checkapp.common.events.NoteListEvent.OnClickNote
-import com.himbrhms.checkapp.common.events.NoteListEvent.OnDeleteNote
-import com.himbrhms.checkapp.common.events.NoteListEvent.OnDeleteNoteUndo
+import com.himbrhms.checkapp.model.events.NoteListEvent.OnAddNote
+import com.himbrhms.checkapp.model.events.NoteListEvent.OnChangeChecked
+import com.himbrhms.checkapp.model.events.NoteListEvent.OnClickNote
+import com.himbrhms.checkapp.model.events.NoteListEvent.OnDeleteNote
+import com.himbrhms.checkapp.model.events.NoteListEvent.OnDeleteNoteUndo
 import com.himbrhms.checkapp.util.Logger
 import com.himbrhms.checkapp.util.className
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -62,7 +62,7 @@ class NoteListViewModel @Inject constructor(
                     repo.deleteNote(event.item)
                 }
                 sendUiEventAsync(
-                    UiEvent.ShowSnackBar(
+                    UiEvent.ShowSnackBarEvent(
                         message = "Note \"${event.item.title}\" deleted",
                         action = "UNDO"
                     )

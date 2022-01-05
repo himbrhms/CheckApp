@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import com.himbrhms.checkapp.common.events.EditNoteEvent
-import com.himbrhms.checkapp.ui.util.DesertSand
+import com.himbrhms.checkapp.model.events.EditNoteEvent
+import com.himbrhms.checkapp.ui.theme.DesertSand
 
 @Composable
 fun NoteFloatingActionButton(

@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.ui.compose.theme
+package com.himbrhms.checkapp.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

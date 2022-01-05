@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -20,11 +18,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.himbrhms.checkapp.R
-import com.himbrhms.checkapp.common.events.NoteListEvent
-import com.himbrhms.checkapp.common.events.UiEvent
-import com.himbrhms.checkapp.ui.NoteListViewModel
-import com.himbrhms.checkapp.ui.util.DesertSand
-import com.himbrhms.checkapp.util.Logger
+import com.himbrhms.checkapp.model.events.NoteListEvent
+import com.himbrhms.checkapp.model.events.UiEvent
+import com.himbrhms.checkapp.model.NoteListViewModel
+import com.himbrhms.checkapp.ui.theme.DesertSand
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -37,7 +34,7 @@ fun NoteListScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is UiEvent.ShowSnackBar -> {
+                is UiEvent.ShowSnackBarEvent -> {
                     val result = scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message,
                         actionLabel = event.action

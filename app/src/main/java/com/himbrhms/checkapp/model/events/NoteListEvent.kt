@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.common.events
+package com.himbrhms.checkapp.model.events
 
 import com.himbrhms.checkapp.data.Note
 

@@ -1,6 +1,5 @@
 package com.himbrhms.checkapp.ui.compose
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import com.himbrhms.checkapp.data.Note
@@ -21,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.himbrhms.checkapp.common.events.NoteListEvent
+import com.himbrhms.checkapp.model.events.NoteListEvent
 
 @Composable
 fun NoteItem(
