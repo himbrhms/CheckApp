@@ -11,6 +11,9 @@ import com.himbrhms.checkapp.model.events.EditNoteEvent
 import com.himbrhms.checkapp.model.events.UiEvent
 import com.himbrhms.checkapp.data.Note
 import com.himbrhms.checkapp.data.NoteListRepo
+import com.himbrhms.checkapp.ui.theme.ColorL
+import com.himbrhms.checkapp.ui.theme.LightDesertSand
+import com.himbrhms.checkapp.ui.theme.longValue
 import com.himbrhms.checkapp.util.Logger
 import com.himbrhms.checkapp.util.className
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +32,7 @@ class EditNoteViewModel @Inject constructor(
         private val logger = Logger(this::class.className)
     }
 
-    var item by mutableStateOf<Note?>(null)
+    var note by mutableStateOf<Note?>(null)
         private set
 
     var title by mutableStateOf("")
@@ -38,7 +41,7 @@ class EditNoteViewModel @Inject constructor(
     var description by mutableStateOf("")
         private set
 
-    var color by mutableStateOf(Color.White)
+    var backgroundColor by mutableStateOf(Color.LightDesertSand)
         private set
 
     private val _uiEvent = Channel<UiEvent>()
@@ -48,10 +51,11 @@ class EditNoteViewModel @Inject constructor(
         val itemId = savedStateHandle.get<Int>("itemId")!!
         if (itemId != -1) {
             viewModelScope.launch {
-                repo.getNoteById(itemId)?.let { item ->
-                    title = item.title
-                    description = item.notes ?: ""
-                    this@EditNoteViewModel.item = item
+                repo.getNoteById(itemId)?.let { note ->
+                    title = note.title
+                    description = note.notes ?: ""
+                    this@EditNoteViewModel.note = note
+                    backgroundColor = ColorL(note.backgroundColorValue)
                 }
             }
         }
@@ -66,6 +70,11 @@ class EditNoteViewModel @Inject constructor(
             is EditNoteEvent.OnDescriptionChange -> {
                 description = event.description
             }
+            is EditNoteEvent.OnDeleteNote -> {
+                viewModelScope.launch {
+                    repo.deleteNote(note!!)
+                }
+            }
             is EditNoteEvent.OnSaveItem -> {
                 viewModelScope.launch {
                     if (!isEmptyItem()) {
@@ -73,9 +82,9 @@ class EditNoteViewModel @Inject constructor(
                             Note(
                                 title = title,
                                 notes = description,
-                                isChecked = item?.isChecked ?: false,
-                                id = item?.id,
-                                backgroundColorValue = color.value.toLong()
+                                isChecked = note?.isChecked ?: false,
+                                id = note?.id,
+                                backgroundColorValue = backgroundColor.longValue
                             )
                         )
                     } else {
@@ -88,13 +97,14 @@ class EditNoteViewModel @Inject constructor(
                 sendAsyncUiEvent(UiEvent.ColorizeBottomSheetEvent)
             }
             is EditNoteEvent.OnColorChange -> {
-                color = event.color
+                backgroundColor = event.color
+                sendAsyncUiEvent(UiEvent.ColorizeBottomSheetEvent)
             }
         }
     }
 
     private fun isEmptyItem(): Boolean {
-        return title.isBlank() && description.isBlank()
+        return this.title.isBlank() && description.isBlank()
     }
 
     private fun sendAsyncUiEvent(event: UiEvent) {

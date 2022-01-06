@@ -1,6 +1,7 @@
 package com.himbrhms.checkapp.model.events
 
 import androidx.compose.ui.graphics.Color
+import com.himbrhms.checkapp.data.Note
 
 sealed class EditNoteEvent {
     abstract val name: String
@@ -17,6 +18,9 @@ sealed class EditNoteEvent {
         override val name: String = this::class.java.simpleName
     }
     object OnSaveItem: EditNoteEvent() {
+        override val name: String = this::class.java.simpleName
+    }
+    object OnDeleteNote: EditNoteEvent() {
         override val name: String = this::class.java.simpleName
     }
     data class OnColorChange(val color: Color):  EditNoteEvent() {

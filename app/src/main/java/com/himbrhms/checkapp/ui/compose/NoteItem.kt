@@ -29,7 +29,6 @@ fun NoteItem(
     onEvent: (NoteListEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Logger("NoteItem").info("note=$note")
     Box(
         modifier = Modifier
             .padding(2.dp)
@@ -50,8 +49,8 @@ fun NoteItem(
                 ) {
                     Text(
                         text = note.title,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
                     )
                 }
                 note.notes.let {

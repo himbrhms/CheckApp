@@ -38,7 +38,7 @@ fun Navigation(isStartup: Boolean) {
                     defaultValue = -1
                 }
             )) {
-            EditItemScreen(onPopBackStack = {
+            EditNoteScreen(onPopBackStack = {
                 navController.popBackStack()
             })
         }

@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.collect
 
 @ExperimentalMaterialApi
 @Composable
-fun EditItemScreen(
+fun EditNoteScreen(
     onPopBackStack: () -> Unit,
     viewModel: EditNoteViewModel = hiltViewModel()
 ) {
@@ -61,27 +61,17 @@ fun EditItemScreen(
             }
         }
     }
-    EditItemScaffold(scaffoldState, viewModel.title, viewModel.description) { event ->
+    SaveOnBackPressed { event ->
         viewModel.onEditNoteEvent(event)
     }
-}
-
-@ExperimentalMaterialApi
-@Composable
-fun EditItemScaffold(
-    scaffoldState: ScaffoldState,
-    title: String,
-    description: String,
-    onEvent: (EditNoteEvent) -> Unit
-) {
-    SaveOnBackPressed(onEvent)
     Scaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp)
     ) {
-        NotePaper(title = title, description = description, onEvent = onEvent)
+        NotePaper(viewModel) { event ->
+            viewModel.onEditNoteEvent(event)
+        }
         ColorizeBottomSheet()
     }
 }
@@ -90,21 +80,5 @@ fun EditItemScaffold(
 private fun SaveOnBackPressed(onEventCallback: (EditNoteEvent) -> Unit) {
     BackHandler {
         onEventCallback(EditNoteEvent.OnSaveItem)
-    }
-}
-
-@ExperimentalMaterialApi
-@Preview
-@Composable
-fun EditItemScaffoldPreview() {
-    EditItemScaffold(
-        scaffoldState = ScaffoldState(
-            drawerState = DrawerState(DrawerValue.Open),
-            snackbarHostState = SnackbarHostState()
-        ),
-        title = "Preview",
-        description = "PreviewDescription"
-    ) {
-        EditNoteEvent.OnSaveItem
     }
 }

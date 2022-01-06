@@ -58,12 +58,12 @@ class NoteListViewModel @Inject constructor(
             is OnDeleteNote -> {
                 logger.info("onNoteListEvent(${event::class.simpleName})")
                 viewModelScope.launch {
-                    lastDeletedNote = event.item
-                    repo.deleteNote(event.item)
+                    lastDeletedNote = event.note
+                    repo.deleteNote(event.note)
                 }
                 sendUiEventAsync(
                     UiEvent.ShowSnackBarEvent(
-                        message = "Note \"${event.item.title}\" deleted",
+                        message = "Note \"${event.note.title}\" deleted",
                         action = "UNDO"
                     )
                 )

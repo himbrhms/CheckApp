@@ -17,36 +17,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.himbrhms.checkapp.R
+import com.himbrhms.checkapp.model.EditNoteViewModel
 import com.himbrhms.checkapp.model.events.EditNoteEvent
 import com.himbrhms.checkapp.ui.theme.DesertSand
 import com.himbrhms.checkapp.ui.theme.LightDesertSand
 
 @Composable
 fun NotePaper(
-    title: String,
-    description: String,
+    viewModel: EditNoteViewModel,
     onEvent: (EditNoteEvent) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(10.dp)
             .border(2.dp, color = Color.LightGray, shape = RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
             .shadow(elevation = 10.dp)
-            .background(Color.LightDesertSand)
+            .background(viewModel.backgroundColor)
     ) {
         TextField(
-            value = title,
+            value = viewModel.title,
             onValueChange = { onEvent(EditNoteEvent.OnTitleChange(it)) },
-            placeholder = { Text(text = "Title") },
+            placeholder = { Text(text = "Title", fontSize = 20.sp) },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color.LightDesertSand
-            )
+                backgroundColor = viewModel.backgroundColor
+            ),
         )
         TextField(
-            value = description,
+            value = viewModel.description,
             onValueChange = { onEvent(EditNoteEvent.OnDescriptionChange(it)) },
             placeholder = { Text(text = "Notes") },
             modifier = Modifier
@@ -54,7 +56,7 @@ fun NotePaper(
                 .weight(1.0f),
             singleLine = false,
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color.LightDesertSand
+                backgroundColor = viewModel.backgroundColor
             )
         )
         Row(
@@ -88,7 +90,7 @@ fun NotePaper(
             }
             Spacer(Modifier.weight(1f))
             FloatingActionButton(
-                onClick = { onEvent(EditNoteEvent.OnAddImage) },
+                onClick = { onEvent(EditNoteEvent.OnDeleteNote) },
                 modifier = Modifier.scale(0.8f),
                 backgroundColor = Color.DesertSand,
             ) {
@@ -114,6 +116,7 @@ fun NotePaper(
     }
 }
 
+/*
 @Preview
 @Composable
 fun NotePaperPreview() {
@@ -123,4 +126,4 @@ fun NotePaperPreview() {
     ) {
         EditNoteEvent.OnSaveItem
     }
-}
+}*/
