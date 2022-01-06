@@ -1,5 +1,6 @@
 package com.himbrhms.checkapp.ui.compose
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
@@ -11,6 +12,7 @@ import com.himbrhms.checkapp.common.Routes.NOTE_LIST_SCREEN
 import com.himbrhms.checkapp.common.Routes.EDIT_NOTE_SCREEN
 import com.himbrhms.checkapp.common.Routes.SPLASH_SCREEN
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun Navigation(isStartup: Boolean) {

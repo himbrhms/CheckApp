@@ -2,10 +2,14 @@ package com.himbrhms.checkapp.ui.compose
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -75,63 +79,9 @@ fun EditItemScaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp),
-        floatingActionButton = {
-            Column() {
-                FloatingActionButton(
-                    onClick = { onEvent(EditNoteEvent.OnColorizeBottomSheet) },
-                    modifier = Modifier.scale(0.8f),
-                    backgroundColor = Color.DesertSand,
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_outline_color_lens_24),
-                        contentDescription = "Colorize",
-                        modifier = Modifier.scale(1.4f)
-                    )
-                }
-                FloatingActionButton(
-                    onClick = { onEvent(EditNoteEvent.OnAddImage) },
-                    modifier = Modifier.scale(0.8f),
-                    backgroundColor = Color.DesertSand,
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_outline_add_photo_alternate_24),
-                        contentDescription = "Add Picturee",
-                        modifier = Modifier.scale(1.4f)
-                    )
-                }
-            }
-        }
+            .padding(10.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .border(width = 2.dp, color = Color.LightGray, shape = RoundedCornerShape(16.dp))
-                .clip(RoundedCornerShape(16.dp))
-                .shadow(elevation = 10.dp)
-        ) {
-            TextField(
-                value = title,
-                onValueChange = { onEvent(EditNoteEvent.OnTitleChange(it)) },
-                placeholder = { Text(text = "Title") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.LightDesertSand
-                )
-            )
-            TextField(
-                value = description,
-                onValueChange = { onEvent(EditNoteEvent.OnDescriptionChange(it)) },
-                placeholder = { Text(text = "Notes") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                singleLine = false,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.LightDesertSand
-                )
-            )
-        }
+        NotePaper(title = title, description = description, onEvent = onEvent)
         ColorizeBottomSheet()
     }
 }

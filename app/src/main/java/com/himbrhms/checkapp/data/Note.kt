@@ -1,7 +1,9 @@
 package com.himbrhms.checkapp.data
 
+import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.himbrhms.checkapp.ui.theme.longValue
 
 @Entity
 data class Note(
@@ -9,5 +11,5 @@ data class Note(
     val title: String,
     val notes: String = "",
     val isChecked: Boolean,
-    val backColorValue: Long = 0xFFFFFF
+    val backgroundColorValue: Long = Color.White.longValue
 )

@@ -28,3 +28,8 @@ val Color.Companion.EggShell
 
 val Color.Companion.LightCoral
     get() = Color(0xFFF08080)
+
+fun ColorL(value: Long) = Color(value.toULong())
+
+val Color.longValue
+    get() = value.toLong()

@@ -24,38 +24,36 @@ fun ColorizeBottomSheet() {
         sheetState = bottomSheetState!!,
         sheetContent = {
             Spacer(modifier = Modifier.size(8.dp))
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .weight(weight = 1f)) {
-                Spacer(Modifier.weight(0.5f))
-                ColorCircle(Color.White)
-                Spacer(Modifier.weight(1f))
-                ColorCircle(Color.Cream)
-                Spacer(Modifier.weight(1f))
-                ColorCircle(Color.DaySkyBlue)
-                Spacer(Modifier.weight(1f))
-                ColorCircle(Color.LightCoral)
-                Spacer(Modifier.weight(1f))
-                ColorCircle(Color.LightCyan)
-                Spacer(Modifier.weight(1f))
-                ColorCircle(Color.LightDesertSand)
-                Spacer(Modifier.weight(1f))
-                ColorCircle(Color.PigPink)
-                Spacer(Modifier.weight(1f))
-                ColorCircle(Color.MagicMind)
-                Spacer(Modifier.weight(0.5f))
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Row(Modifier.padding(4.dp)) {
+                    ColorCircle(Color.White)
+                    Spacer(Modifier.weight(1f))
+                    ColorCircle(Color.Cream)
+                    Spacer(Modifier.weight(1f))
+                    ColorCircle(Color.DaySkyBlue)
+                    Spacer(Modifier.weight(1f))
+                    ColorCircle(Color.LightCoral)
+                    Spacer(Modifier.weight(1f))
+                    ColorCircle(Color.LightCyan)
+                    Spacer(Modifier.weight(1f))
+                    ColorCircle(Color.LightDesertSand)
+                    Spacer(Modifier.weight(1f))
+                    ColorCircle(Color.PigPink)
+                    Spacer(Modifier.weight(1f))
+                    ColorCircle(Color.MagicMind)
+                }
             }
         }) {
     }
 }
 
 @Composable
-private fun ColorCircle(fillColor: Color, viewModel: EditNoteViewModel = hiltViewModel()) {
-    FloatingActionButton(onClick = { viewModel.onEditNoteEvent(OnColorChange(fillColor)) },
+private fun ColorCircle(backgroundColor: Color, viewModel: EditNoteViewModel = hiltViewModel()) {
+    Button(onClick = { viewModel.onEditNoteEvent(OnColorChange(backgroundColor)) },
         modifier= Modifier
             .size(40.dp)
             .border(1.dp, Color.LightGray, CircleShape),  //avoid the oval shape
         shape = CircleShape,
-        backgroundColor = fillColor
+        colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor)
     ){}
 }

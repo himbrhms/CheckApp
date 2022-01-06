@@ -3,6 +3,7 @@ package com.himbrhms.checkapp.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,7 +38,7 @@ class EditNoteViewModel @Inject constructor(
     var description by mutableStateOf("")
         private set
 
-    var color by mutableStateOf(0xFFFFFFL)
+    var color by mutableStateOf(Color.White)
         private set
 
     private val _uiEvent = Channel<UiEvent>()
@@ -74,7 +75,7 @@ class EditNoteViewModel @Inject constructor(
                                 notes = description,
                                 isChecked = item?.isChecked ?: false,
                                 id = item?.id,
-                                backColorValue = color
+                                backgroundColorValue = color.value.toLong()
                             )
                         )
                     } else {
@@ -86,7 +87,9 @@ class EditNoteViewModel @Inject constructor(
             is EditNoteEvent.OnColorizeBottomSheet -> {
                 sendAsyncUiEvent(UiEvent.ColorizeBottomSheetEvent)
             }
-            is EditNoteEvent.OnColorChange -> sendAsyncUiEvent(UiEvent.ColorChangeEvent(event.color))
+            is EditNoteEvent.OnColorChange -> {
+                color = event.color
+            }
         }
     }
 

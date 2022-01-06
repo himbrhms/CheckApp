@@ -1,12 +1,14 @@
 package com.himbrhms.checkapp.ui.compose
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.LaunchedEffect
@@ -17,13 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import com.himbrhms.checkapp.R
 import com.himbrhms.checkapp.model.events.NoteListEvent
 import com.himbrhms.checkapp.model.events.UiEvent
 import com.himbrhms.checkapp.model.NoteListViewModel
 import com.himbrhms.checkapp.ui.theme.DesertSand
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
+@ExperimentalFoundationApi
 @Composable
 fun NoteListScreen(
     onNavigate: (UiEvent.NavigateEvent) -> Unit,
@@ -35,12 +40,15 @@ fun NoteListScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.ShowSnackBarEvent -> {
-                    val result = scaffoldState.snackbarHostState.showSnackbar(
-                        message = event.message,
-                        actionLabel = event.action
-                    )
-                    if (result == SnackbarResult.ActionPerformed) {
-                        viewModel.onNoteListEvent(NoteListEvent.OnDeleteNoteUndo)
+                    viewModel.viewModelScope.launch {
+                        scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
+                        val result = scaffoldState.snackbarHostState.showSnackbar(
+                            message = event.message,
+                            actionLabel = event.action
+                        )
+                        if (result == SnackbarResult.ActionPerformed) {
+                            viewModel.onNoteListEvent(NoteListEvent.OnDeleteNoteUndo)
+                        }
                     }
                 }
                 is UiEvent.NavigateEvent -> {
@@ -66,23 +74,26 @@ fun NoteListScreen(
             }
         }
     ) {
-        LazyColumn(
+        LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(2.dp)
+                .padding(2.dp),
+            cells = GridCells.Fixed(2)
         ) {
             items(noteList.value) { noteItem ->
                 NoteItem(
-                    item = noteItem,
+                    note = noteItem,
                     onEvent = viewModel::onNoteListEvent,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            viewModel.onNoteListEvent(NoteListEvent.OnClickNote(noteItem))
-                        }
+                        .combinedClickable(
+                            onClick = { viewModel.onNoteListEvent(NoteListEvent.OnClickNote(noteItem)) },
+                            onLongClick = {  }
+                        )
                         .padding(16.dp)
                 )
             }
         }
     }
 }
+

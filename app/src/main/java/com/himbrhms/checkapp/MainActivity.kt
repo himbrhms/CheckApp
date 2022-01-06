@@ -3,6 +3,7 @@ package com.himbrhms.checkapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import com.himbrhms.checkapp.ui.compose.Navigation
 import com.himbrhms.checkapp.ui.theme.CheckAppTheme
@@ -17,6 +18,7 @@ class MainActivity : ComponentActivity() {
         private val logger = Logger(this::class.className)
     }
 
+    @ExperimentalFoundationApi
     @ExperimentalMaterialApi // ModalBottomSheetLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
