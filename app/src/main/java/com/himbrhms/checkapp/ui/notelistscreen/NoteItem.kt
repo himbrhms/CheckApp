@@ -24,7 +24,7 @@ import com.himbrhms.checkapp.ui.theme.ColorL
 import com.himbrhms.checkapp.util.Logger
 
 @Composable
-fun NoteItem(
+internal fun NoteItem(
     note: Note,
     onEvent: (NoteListEvent) -> Unit,
     modifier: Modifier = Modifier
@@ -72,7 +72,7 @@ fun NoteItem(
 
 @Preview
 @Composable
-fun ComposablePreview() {
+private fun ComposablePreview() {
     NoteItem(
         Note(
             id = 1,

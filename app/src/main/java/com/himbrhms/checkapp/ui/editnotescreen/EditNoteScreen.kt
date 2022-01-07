@@ -2,34 +2,18 @@ package com.himbrhms.checkapp.ui.compose
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.himbrhms.checkapp.R
 import com.himbrhms.checkapp.model.events.EditNoteEvent
 import com.himbrhms.checkapp.model.events.UiEvent.ColorizeBottomSheetEvent
 import com.himbrhms.checkapp.model.events.UiEvent.PopBackstackEvent
 import com.himbrhms.checkapp.model.events.UiEvent.ShowToastEvent
 import com.himbrhms.checkapp.model.EditNoteViewModel
-import com.himbrhms.checkapp.ui.theme.DesertSand
-import com.himbrhms.checkapp.ui.theme.LightDesertSand
 import com.himbrhms.checkapp.util.Logger
 import kotlinx.coroutines.flow.collect
 
@@ -69,10 +53,10 @@ fun EditNoteScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        NotePaper(viewModel) { event ->
+        EditNoteColumn(viewModel) { event ->
             viewModel.onEditNoteEvent(event)
         }
-        ColorizeBottomSheet()
+        ColorPickerBottomSheet()
     }
 }
 

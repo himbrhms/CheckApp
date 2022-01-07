@@ -18,7 +18,7 @@ var bottomSheetState: ModalBottomSheetState? = null
 
 @ExperimentalMaterialApi
 @Composable
-fun ColorizeBottomSheet() {
+fun ColorPickerBottomSheet() {
     bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     ModalBottomSheetLayout(
         sheetState = bottomSheetState!!,

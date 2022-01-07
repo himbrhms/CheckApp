@@ -25,7 +25,7 @@ import com.himbrhms.checkapp.ui.theme.DesertSand
 import com.himbrhms.checkapp.ui.theme.LightDesertSand
 
 @Composable
-fun NotePaper(
+fun EditNoteColumn(
     viewModel: EditNoteViewModel,
     onEvent: (EditNoteEvent) -> Unit
 ) {
