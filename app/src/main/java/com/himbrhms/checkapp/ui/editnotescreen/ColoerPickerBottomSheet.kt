@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.ui.compose
+package com.himbrhms.checkapp.ui.editnotescreen
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -18,7 +18,7 @@ var bottomSheetState: ModalBottomSheetState? = null
 
 @ExperimentalMaterialApi
 @Composable
-fun ColorPickerBottomSheet() {
+internal fun ColorPickerBottomSheet() {
     bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     ModalBottomSheetLayout(
         sheetState = bottomSheetState!!,

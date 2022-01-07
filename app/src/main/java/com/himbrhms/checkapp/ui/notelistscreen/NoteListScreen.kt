@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.ui.compose
+package com.himbrhms.checkapp.ui.notelistscreen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable

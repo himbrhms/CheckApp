@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
-import com.himbrhms.checkapp.ui.compose.Navigation
+import com.himbrhms.checkapp.ui.Navigation
 import com.himbrhms.checkapp.ui.theme.CheckAppTheme
 import com.himbrhms.checkapp.util.Logger
 import com.himbrhms.checkapp.util.className

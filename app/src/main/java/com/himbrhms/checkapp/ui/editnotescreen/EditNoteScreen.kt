@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.ui.compose
+package com.himbrhms.checkapp.ui.editnotescreen
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler

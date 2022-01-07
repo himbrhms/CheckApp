@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.ui.compose
+package com.himbrhms.checkapp.ui.splashscreen
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable

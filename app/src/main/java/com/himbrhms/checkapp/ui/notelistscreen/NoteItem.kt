@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.ui.compose
+package com.himbrhms.checkapp.ui.notelistscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.himbrhms.checkapp.model.events.NoteListEvent
 import com.himbrhms.checkapp.ui.theme.ColorL
-import com.himbrhms.checkapp.util.Logger
 
 @Composable
 internal fun NoteItem(

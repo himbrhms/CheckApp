@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.ui.compose
+package com.himbrhms.checkapp.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
@@ -11,6 +11,9 @@ import androidx.navigation.navArgument
 import com.himbrhms.checkapp.common.Routes.NOTE_LIST_SCREEN
 import com.himbrhms.checkapp.common.Routes.EDIT_NOTE_SCREEN
 import com.himbrhms.checkapp.common.Routes.SPLASH_SCREEN
+import com.himbrhms.checkapp.ui.editnotescreen.EditNoteScreen
+import com.himbrhms.checkapp.ui.notelistscreen.NoteListScreen
+import com.himbrhms.checkapp.ui.splashscreen.SplashScreen
 
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi

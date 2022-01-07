@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.ui.compose
+package com.himbrhms.checkapp.ui.editnotescreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,7 +25,7 @@ import com.himbrhms.checkapp.ui.theme.DesertSand
 import com.himbrhms.checkapp.ui.theme.LightDesertSand
 
 @Composable
-fun EditNoteColumn(
+internal fun EditNoteColumn(
     viewModel: EditNoteViewModel,
     onEvent: (EditNoteEvent) -> Unit
 ) {
