@@ -9,11 +9,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.himbrhms.checkapp.model.events.EditNoteEvent
-import com.himbrhms.checkapp.model.events.UiEvent.ColorizeBottomSheetEvent
-import com.himbrhms.checkapp.model.events.UiEvent.PopBackstackEvent
-import com.himbrhms.checkapp.model.events.UiEvent.ShowToastEvent
+import com.himbrhms.checkapp.model.events.UiEvent.OnShowHideColorPickerSheet
+import com.himbrhms.checkapp.model.events.UiEvent.OnPopBackstack
+import com.himbrhms.checkapp.model.events.UiEvent.OnShowToast
 import com.himbrhms.checkapp.model.EditNoteViewModel
+import com.himbrhms.checkapp.model.events.ModelEvent
 import com.himbrhms.checkapp.util.Logger
 import kotlinx.coroutines.flow.collect
 
@@ -29,16 +29,16 @@ fun EditNoteScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is PopBackstackEvent -> onPopBackStack()
-                is ShowToastEvent -> {
+                is OnPopBackstack -> onPopBackStack()
+                is OnShowToast -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
-                is ColorizeBottomSheetEvent -> {
-                    logger.info("ColorizeBottomSheetEvent: isVisible=${bottomSheetState?.isVisible}")
-                    if (bottomSheetState?.isVisible == true) {
-                        bottomSheetState?.hide()
-                    } else if (bottomSheetState?.isVisible == false) {
-                        bottomSheetState?.show()
+                is OnShowHideColorPickerSheet -> {
+                    logger.info("ColorizeBottomSheetEvent: isVisible=${colorBottomSheetState?.isVisible}")
+                    if (colorBottomSheetState?.isVisible == true) {
+                        colorBottomSheetState?.hide()
+                    } else if (colorBottomSheetState?.isVisible == false) {
+                        colorBottomSheetState?.show()
                     }
                 }
                 else -> Unit
@@ -61,8 +61,8 @@ fun EditNoteScreen(
 }
 
 @Composable
-private fun SaveOnBackPressed(onEventCallback: (EditNoteEvent) -> Unit) {
+private fun SaveOnBackPressed(onEventCallback: (ModelEvent) -> Unit) {
     BackHandler {
-        onEventCallback(EditNoteEvent.OnSaveItem)
+        onEventCallback(ModelEvent.OnSaveNote)
     }
 }

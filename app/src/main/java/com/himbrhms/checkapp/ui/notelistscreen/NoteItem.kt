@@ -19,19 +19,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.himbrhms.checkapp.model.events.NoteListEvent
+import com.himbrhms.checkapp.model.events.ModelEvent
 import com.himbrhms.checkapp.ui.theme.ColorL
 
 @Composable
 internal fun NoteItem(
     note: Note,
-    onEvent: (NoteListEvent) -> Unit,
-    modifier: Modifier = Modifier
+    onEvent: (ModelEvent) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
+    val boxBorderWidth = if (note.isSelected) 4.dp else 2.dp
+    val boxBorderColor = if (note.isSelected) Color.Blue else Color.LightGray
     Box(
         modifier = Modifier
             .padding(2.dp)
-            .border(width = 2.dp, color = Color.LightGray, shape = RoundedCornerShape(10.dp))
+            .border(
+                width = boxBorderWidth,
+                color = boxBorderColor,
+                shape = RoundedCornerShape(10.dp)
+            )
             .clip(RoundedCornerShape(10.dp))
             .background(ColorL(note.backgroundColorValue))
     ) {
@@ -58,7 +64,7 @@ internal fun NoteItem(
                 }
             }
             IconButton(onClick = {
-                onEvent(NoteListEvent.OnDeleteNote(note))
+                onEvent(ModelEvent.OnDeleteNote(note))
             }) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,
@@ -73,15 +79,7 @@ internal fun NoteItem(
 @Composable
 private fun ComposablePreview() {
     NoteItem(
-        Note(
-            id = 1,
-            title = "Preview",
-            notes = "PreviewDescription",
-            true,
-            backgroundColorValue = Color.White.value.toLong()
-        ),
-        {
-            NoteListEvent.OnAddNote
-        }
+        note = Note(1, "Preview", "Desc", true, Color.White.value.toLong()),
+        onEvent = { ModelEvent.OnAddNote },
     )
 }

@@ -7,10 +7,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.himbrhms.checkapp.model.events.EditNoteEvent
 import com.himbrhms.checkapp.model.events.UiEvent
+import com.himbrhms.checkapp.model.events.UiEvent.OnPopBackstack
+import com.himbrhms.checkapp.model.events.UiEvent.OnShowHideColorPickerSheet
+import com.himbrhms.checkapp.model.events.UiEvent.OnShowToast
 import com.himbrhms.checkapp.data.Note
 import com.himbrhms.checkapp.data.NoteListRepo
+import com.himbrhms.checkapp.model.events.ModelEvent
+import com.himbrhms.checkapp.model.events.ModelEvent.OnColorChange
+import com.himbrhms.checkapp.model.events.ModelEvent.OnDeleteNote
+import com.himbrhms.checkapp.model.events.ModelEvent.OnDescriptionChange
+import com.himbrhms.checkapp.model.events.ModelEvent.OnToggleColorPickerBottomSheet
+import com.himbrhms.checkapp.model.events.ModelEvent.OnSaveNote
+import com.himbrhms.checkapp.model.events.ModelEvent.OnTitleChange
 import com.himbrhms.checkapp.ui.theme.ColorL
 import com.himbrhms.checkapp.ui.theme.LightDesertSand
 import com.himbrhms.checkapp.ui.theme.longValue
@@ -61,45 +70,46 @@ class EditNoteViewModel @Inject constructor(
         }
     }
 
-    fun onEditNoteEvent(event: EditNoteEvent) {
+    fun onEditNoteEvent(event: ModelEvent) {
         logger.debug("onEvent(${event.name})")
         when (event) {
-            is EditNoteEvent.OnTitleChange -> {
+            is OnTitleChange -> {
                 title = event.title
             }
-            is EditNoteEvent.OnDescriptionChange -> {
+            is OnDescriptionChange -> {
                 description = event.description
             }
-            is EditNoteEvent.OnDeleteNote -> {
+            is OnDeleteNote -> {
                 viewModelScope.launch {
                     repo.deleteNote(note!!)
                 }
             }
-            is EditNoteEvent.OnSaveItem -> {
+            is OnSaveNote -> {
                 viewModelScope.launch {
                     if (!isEmptyItem()) {
                         repo.insertNote(
                             Note(
                                 title = title,
                                 notes = description,
-                                isChecked = note?.isChecked ?: false,
+                                isSelected = note?.isSelected ?: false,
                                 id = note?.id,
                                 backgroundColorValue = backgroundColor.longValue
                             )
                         )
                     } else {
-                        sendAsyncUiEvent(UiEvent.ShowToastEvent(message = "Empty Note dismissed"))
+                        sendAsyncUiEvent(OnShowToast(message = "Empty Note dismissed"))
                     }
-                    sendAsyncUiEvent(UiEvent.PopBackstackEvent)
+                    sendAsyncUiEvent(OnPopBackstack)
                 }
             }
-            is EditNoteEvent.OnColorizeBottomSheet -> {
-                sendAsyncUiEvent(UiEvent.ColorizeBottomSheetEvent)
+            is OnToggleColorPickerBottomSheet -> {
+                sendAsyncUiEvent(OnShowHideColorPickerSheet)
             }
-            is EditNoteEvent.OnColorChange -> {
+            is OnColorChange -> {
                 backgroundColor = event.color
-                sendAsyncUiEvent(UiEvent.ColorizeBottomSheetEvent)
+                sendAsyncUiEvent(OnShowHideColorPickerSheet)
             }
+            else -> Unit
         }
     }
 

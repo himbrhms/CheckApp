@@ -2,16 +2,15 @@ package com.himbrhms.checkapp.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.himbrhms.checkapp.common.Routes
-import com.himbrhms.checkapp.model.events.NoteListEvent
-import com.himbrhms.checkapp.model.events.UiEvent
+import com.himbrhms.checkapp.common.Routes.EDIT_NOTE_SCREEN
+import com.himbrhms.checkapp.model.events.UiEvent.OnNavigate
+import com.himbrhms.checkapp.model.events.UiEvent.OnSelectNote
+import com.himbrhms.checkapp.model.events.UiEvent.OnShowSnackBar
+import com.himbrhms.checkapp.model.events.UiEvent.OnShowHideNoteListBottomSheet
 import com.himbrhms.checkapp.data.NoteListRepo
 import com.himbrhms.checkapp.data.Note
-import com.himbrhms.checkapp.model.events.NoteListEvent.OnAddNote
-import com.himbrhms.checkapp.model.events.NoteListEvent.OnChangeChecked
-import com.himbrhms.checkapp.model.events.NoteListEvent.OnClickNote
-import com.himbrhms.checkapp.model.events.NoteListEvent.OnDeleteNote
-import com.himbrhms.checkapp.model.events.NoteListEvent.OnDeleteNoteUndo
+import com.himbrhms.checkapp.model.events.ModelEvent
+import com.himbrhms.checkapp.model.events.UiEvent
 import com.himbrhms.checkapp.util.Logger
 import com.himbrhms.checkapp.util.className
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,43 +36,34 @@ class NoteListViewModel @Inject constructor(
 
     private var lastDeletedNote: Note? = null
 
-    fun onNoteListEvent(event: NoteListEvent) {
+    fun onEvent(event: ModelEvent) {
+        logger.info("onEvent(event=${event.name})")
         when (event) {
-            is OnAddNote -> {
-                logger.info("onNoteListEvent(${event::class.simpleName})")
-                sendUiEventAsync(
-                    UiEvent.NavigateEvent(Routes.EDIT_NOTE_SCREEN)
-                )
+            is ModelEvent.OnAddNote -> sendUiEventAsync(OnNavigate(EDIT_NOTE_SCREEN))
+            is ModelEvent.OnClickNote -> {
+                sendUiEventAsync(OnNavigate(EDIT_NOTE_SCREEN + "?itemId=${event.item.id}"))
             }
-            is OnClickNote -> {
-                logger.info("onNoteListEvent(${event::class.simpleName})")
-                sendUiEventAsync(UiEvent.NavigateEvent(Routes.EDIT_NOTE_SCREEN  + "?itemId=${event.item.id}"))
-            }
-            is OnChangeChecked -> {
-                logger.info("onNoteListEvent(${event::class.simpleName})")
+            is ModelEvent.OnToggleSelectedNote -> {
                 viewModelScope.launch {
-                    repo.insertNote(event.item.copy(isChecked = event.newIsChecked))
+                    repo.insertNote(event.item.copy(isSelected = !event.item.isSelected))
                 }
+                sendUiEventAsync(OnShowHideNoteListBottomSheet)
             }
-            is OnDeleteNote -> {
-                logger.info("onNoteListEvent(${event::class.simpleName})")
+            is ModelEvent.OnDeleteNote -> {
                 viewModelScope.launch {
                     lastDeletedNote = event.note
                     repo.deleteNote(event.note)
                 }
                 sendUiEventAsync(
-                    UiEvent.ShowSnackBarEvent(
-                        message = "Note \"${event.note.title}\" deleted",
-                        action = "UNDO"
-                    )
+                    OnShowSnackBar("Note \"${event.note.title}\" deleted", action = "UNDO")
                 )
             }
-            is OnDeleteNoteUndo -> {
-                logger.info("onNoteListEvent(${event::class.simpleName})")
+            is ModelEvent.OnDeleteNoteUndo -> {
                 lastDeletedNote?.let { toDo ->
                     viewModelScope.launch { repo.insertNote(toDo) }
                 }
             }
+            else -> logger.warn("onEvent: event=${event.name} unhandled")
         }
     }
 

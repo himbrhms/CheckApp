@@ -10,18 +10,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.himbrhms.checkapp.model.EditNoteViewModel
-import com.himbrhms.checkapp.model.events.EditNoteEvent.OnColorChange
+import com.himbrhms.checkapp.model.events.ModelEvent.OnColorChange
 import com.himbrhms.checkapp.ui.theme.*
 
 @ExperimentalMaterialApi
-var bottomSheetState: ModalBottomSheetState? = null
+internal var colorBottomSheetState: ModalBottomSheetState? = null
 
 @ExperimentalMaterialApi
 @Composable
 internal fun ColorPickerBottomSheet() {
-    bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    colorBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     ModalBottomSheetLayout(
-        sheetState = bottomSheetState!!,
+        sheetState = colorBottomSheetState!!,
         sheetContent = {
             Spacer(modifier = Modifier.size(8.dp))
             Box(modifier = Modifier.fillMaxWidth()) {

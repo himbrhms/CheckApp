@@ -2,7 +2,6 @@ package com.himbrhms.checkapp.ui.notelistscreen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
-
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,17 +20,22 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import com.himbrhms.checkapp.R
-import com.himbrhms.checkapp.model.events.NoteListEvent
 import com.himbrhms.checkapp.model.events.UiEvent
 import com.himbrhms.checkapp.model.NoteListViewModel
+import com.himbrhms.checkapp.model.events.ModelEvent
+import com.himbrhms.checkapp.model.events.ModelEvent.OnAddNote
+import com.himbrhms.checkapp.model.events.ModelEvent.OnClickNote
+import com.himbrhms.checkapp.model.events.ModelEvent.OnDeleteNoteUndo
+import com.himbrhms.checkapp.ui.editnotescreen.colorBottomSheetState
 import com.himbrhms.checkapp.ui.theme.DesertSand
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+@ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
 fun NoteListScreen(
-    onNavigate: (UiEvent.NavigateEvent) -> Unit,
+    onNavigate: (UiEvent.OnNavigate) -> Unit,
     viewModel: NoteListViewModel = hiltViewModel()
 ) {
     val noteList = viewModel.noteList.collectAsState(initial = emptyList())
@@ -39,7 +43,7 @@ fun NoteListScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is UiEvent.ShowSnackBarEvent -> {
+                is UiEvent.OnShowSnackBar -> {
                     viewModel.viewModelScope.launch {
                         scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
                         val result = scaffoldState.snackbarHostState.showSnackbar(
@@ -47,12 +51,21 @@ fun NoteListScreen(
                             actionLabel = event.action
                         )
                         if (result == SnackbarResult.ActionPerformed) {
-                            viewModel.onNoteListEvent(NoteListEvent.OnDeleteNoteUndo)
+                            viewModel.onEvent(OnDeleteNoteUndo)
                         }
                     }
                 }
-                is UiEvent.NavigateEvent -> {
+                is UiEvent.OnNavigate -> {
                     onNavigate(event)
+                }
+                is UiEvent.OnSelectNote -> {
+                }
+                is UiEvent.OnShowHideNoteListBottomSheet -> {
+                    if (noteListBottomSheetState?.isVisible == true) {
+                        noteListBottomSheetState?.hide()
+                    } else if (noteListBottomSheetState?.isVisible == false) {
+                        noteListBottomSheetState?.show()
+                    }
                 }
                 else -> Unit
             }
@@ -62,7 +75,7 @@ fun NoteListScreen(
         scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { viewModel.onNoteListEvent(NoteListEvent.OnAddNote) },
+                onClick = { viewModel.onEvent(OnAddNote) },
                 modifier = Modifier.scale(0.8f),
                 backgroundColor = Color.DesertSand,
             ) {
@@ -80,15 +93,19 @@ fun NoteListScreen(
                 .padding(2.dp),
             cells = GridCells.Fixed(2)
         ) {
-            items(noteList.value) { noteItem ->
+            items(noteList.value) { note ->
                 NoteItem(
-                    note = noteItem,
-                    onEvent = viewModel::onNoteListEvent,
+                    note = note,
+                    onEvent = viewModel::onEvent,
                     modifier = Modifier
                         .fillMaxWidth()
                         .combinedClickable(
-                            onClick = { viewModel.onNoteListEvent(NoteListEvent.OnClickNote(noteItem)) },
-                            onLongClick = {  }
+                            onClick = { viewModel.onEvent(OnClickNote(note)) },
+                            onLongClick = {
+                                viewModel.onEvent(
+                                    ModelEvent.OnToggleSelectedNote(note)
+                                )
+                            }
                         )
                         .padding(16.dp)
                 )

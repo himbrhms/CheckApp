@@ -1,12 +1,11 @@
 package com.himbrhms.checkapp.model.events
 
-import androidx.compose.ui.graphics.Color
-
 sealed class UiEvent {
-    object PopBackstackEvent : UiEvent()
-    object ColorizeBottomSheetEvent: UiEvent()
-    data class NavigateEvent(val route: String) : UiEvent()
-    data class ShowSnackBarEvent(val message: String, val action: String? = null) : UiEvent()
-    data class ShowToastEvent(val message: String) : UiEvent()
-    data class ColorChangeEvent(val color: Color) : UiEvent()
+    object OnPopBackstack : UiEvent()
+    object OnShowHideColorPickerSheet: UiEvent()
+    object OnShowHideNoteListBottomSheet: UiEvent()
+    data class OnNavigate(val route: String) : UiEvent()
+    data class OnShowSnackBar(val message: String, val action: String? = null) : UiEvent()
+    data class OnShowToast(val message: String) : UiEvent()
+    data class OnSelectNote(val dlka: String): UiEvent()
 }

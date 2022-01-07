@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.Flow
 interface NoteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertNote(item: Note)
+    suspend fun insertNote(note: Note)
 
     @Delete
-    suspend fun deleteNote(item: Note)
+    suspend fun deleteNote(note: Note)
 
     @Query("SELECT * FROM Note WHERE id = :id")
     suspend fun getNoteById(id: Int): Note?
