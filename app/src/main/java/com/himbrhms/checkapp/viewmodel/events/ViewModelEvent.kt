@@ -10,7 +10,7 @@ sealed class ViewModelEvent {
         override val name: String = this::class.java.simpleName
     }
 
-    data class OnDeleteNotes(val note: Note): ViewModelEvent() {
+    object OnDeleteNotes: ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 
@@ -22,7 +22,7 @@ sealed class ViewModelEvent {
         override val name: String = this::class.java.simpleName
     }
 
-    data class OnSelectedNote(val note: Note): ViewModelEvent() {
+    data class OnLongClickNote(val note: Note): ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 

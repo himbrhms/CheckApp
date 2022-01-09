@@ -1,5 +1,6 @@
 package com.himbrhms.checkapp.ui.notelistscreen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import com.himbrhms.checkapp.data.Note
@@ -25,17 +26,14 @@ import com.himbrhms.checkapp.ui.theme.ColorL
 @Composable
 internal fun NoteItem(
     note: Note,
-    onEvent: (ViewModelEvent) -> Unit,
+    borderStroke: BorderStroke = BorderStroke(width = 2.dp, color = Color.LightGray),
     modifier: Modifier = Modifier,
 ) {
-    val boxBorderWidth = if (note.isSelected) 4.dp else 2.dp
-    val boxBorderColor = if (note.isSelected) Color.Blue else Color.LightGray
     Box(
         modifier = Modifier
             .padding(2.dp)
             .border(
-                width = boxBorderWidth,
-                color = boxBorderColor,
+                borderStroke,
                 shape = RoundedCornerShape(10.dp)
             )
             .clip(RoundedCornerShape(10.dp))
@@ -63,14 +61,6 @@ internal fun NoteItem(
                     Text(text = it)
                 }
             }
-            IconButton(onClick = {
-                onEvent(ViewModelEvent.OnDeleteNotes(note))
-            }) {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = "Delete"
-                )
-            }
         }
     }
 }
@@ -79,7 +69,11 @@ internal fun NoteItem(
 @Composable
 private fun ComposablePreview() {
     NoteItem(
-        note = Note(1, "Preview", "Desc", true, Color.White.value.toLong()),
-        onEvent = { ViewModelEvent.OnAddNote },
+        Note(
+            id = 1,
+            title = "Preview",
+            notes = "Notes",
+            backgroundColorValue = Color.White.value.toLong()
+        )
     )
 }

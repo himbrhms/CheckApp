@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.himbrhms.checkapp.common.Routes.EDIT_NOTE_SCREEN
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnNavigate
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnShowSnackBar
-import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnShowHideNoteListBottomSheet
 import com.himbrhms.checkapp.data.NoteListRepo
 import com.himbrhms.checkapp.data.NoteCache
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
@@ -41,15 +40,10 @@ class NoteListViewModel @Inject constructor(
             is ViewModelEvent.OnClickNote -> {
                 sendUiEvent(OnNavigate(EDIT_NOTE_SCREEN + "?itemId=${event.note.id}"))
             }
-            is ViewModelEvent.OnSelectedNote -> {
-
-                viewModelScope.launch {
-                    repo.insertNote(event.note.copy(isSelected = !event.note.isSelected))
-                }
-                sendUiEvent(OnShowHideNoteListBottomSheet)
-            }
+            is ViewModelEvent.OnLongClickNote -> onNoteSelected(event)
             is ViewModelEvent.OnDeleteNotes -> {
-                deleteNotes(event)
+                if (noteCache.isEmpty()) return
+                deleteNotes()
                 sendUiEvent(OnShowSnackBar("Note deleted", action = "UNDO"))
             }
             is ViewModelEvent.OnDeleteNotesUndo -> undoDeleteNotes()
@@ -57,25 +51,34 @@ class NoteListViewModel @Inject constructor(
         }
     }
 
-    private fun selectedNote(event: ViewModelEvent.OnSelectedNote) {
+    private var deletedCalled = false
+
+    private fun onNoteSelected(event: ViewModelEvent.OnLongClickNote) {
         val selectedNote = event.note
-        noteCache.insert(selectedNote.id!!, selectedNote)
+        if (deletedCalled) {
+            deletedCalled = false
+            noteCache.clear()
+        }
+        if (noteCache.contains(selectedNote.id!!)) {
+            noteCache.remove(selectedNote.id)
+        } else {
+            noteCache.insert(selectedNote.id, selectedNote)
+        }
     }
 
-    private fun deleteNotes(event: ViewModelEvent.OnDeleteNotes) {
-        noteCache.clear() // removes previous deleted notes
+    private fun deleteNotes() {
+        deletedCalled = true
         viewModelScope.launch {
-            val deletedNote = event.note
-            logger.info("${event.name}: $deletedNote")
-            noteCache.insert(deletedNote.id!!, deletedNote)
-            repo.deleteNote(event.note)
+            val notesToDelete = noteCache.getAllValues()
+            notesToDelete.values.forEach { noteToDelete ->
+                repo.deleteNote(noteToDelete)
+            }
         }
     }
 
     private fun undoDeleteNotes() {
         val deletedNotes = noteCache.getAllValues()
         logger.info("OnDeleteNoteUndo: ${deletedNotes.values.joinToString()}")
-        if (deletedNotes.isEmpty()) return
         viewModelScope.launch {
             deletedNotes.values.forEach { note ->
                 repo.insertNote(note)

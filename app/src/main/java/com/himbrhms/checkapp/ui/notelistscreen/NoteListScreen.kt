@@ -1,8 +1,9 @@
 package com.himbrhms.checkapp.ui.notelistscreen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.runtime.Composable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,8 +11,9 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
@@ -26,7 +28,9 @@ import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnAddNote
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnClickNote
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnDeleteNotesUndo
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnLongClickNote
 import com.himbrhms.checkapp.ui.theme.DesertSand
+import com.himbrhms.checkapp.util.Logger
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -57,8 +61,6 @@ fun NoteListScreen(
                 is UiEvent.OnNavigate -> {
                     onNavigate(event)
                 }
-                is UiEvent.OnSelectNote -> {
-                }
                 is UiEvent.OnShowHideNoteListBottomSheet -> {
                     if (noteListBottomSheetState?.isVisible == true) {
                         noteListBottomSheetState?.hide()
@@ -70,22 +72,42 @@ fun NoteListScreen(
             }
         }
     }
+    val selectedNotes = remember {
+        mutableStateListOf<Int?>()
+    }
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { viewModel.onEvent(OnAddNote) },
-                modifier = Modifier.scale(0.8f),
-                backgroundColor = Color.DesertSand,
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_baseline_post_add_24),
-                    contentDescription = "Add Note",
-                    modifier = Modifier.scale(1.4f)
-                )
+            Column {
+                FloatingActionButton(
+                    onClick = {
+                        selectedNotes.clear()
+                        viewModel.onEvent(ViewModelEvent.OnDeleteNotes)
+                    },
+                    modifier = Modifier.scale(0.8f),
+                    backgroundColor = Color.DesertSand,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = "Delete",
+                        modifier = Modifier.scale(1.4f)
+                    )
+                }
+                FloatingActionButton(
+                    onClick = { viewModel.onEvent(OnAddNote) },
+                    modifier = Modifier.scale(0.8f),
+                    backgroundColor = Color.DesertSand,
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_baseline_post_add_24),
+                        contentDescription = "Add Note",
+                        modifier = Modifier.scale(1.4f)
+                    )
+                }
             }
         }
     ) {
+        val logger = Logger("LazyVerticalGrid")
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxSize()
@@ -93,17 +115,25 @@ fun NoteListScreen(
             cells = GridCells.Fixed(2)
         ) {
             items(noteList.value) { note ->
+                logger.info("selectedNotes=${selectedNotes.joinToString()}")
                 NoteItem(
                     note = note,
-                    onEvent = viewModel::onEvent,
+                    borderStroke = if (selectedNotes.contains(note.id)) {
+                        BorderStroke(width = 4.dp, color = Color.Blue)
+                    } else {
+                        BorderStroke(width = 2.dp, color = Color.LightGray)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .combinedClickable(
                             onClick = { viewModel.onEvent(OnClickNote(note)) },
                             onLongClick = {
-                                viewModel.onEvent(
-                                    ViewModelEvent.OnSelectedNote(note)
-                                )
+                                if (selectedNotes.contains(note.id)) {
+                                    selectedNotes.remove(note.id)
+                                } else {
+                                    selectedNotes.add(note.id)
+                                }
+                                viewModel.onEvent(OnLongClickNote(note))
                             }
                         )
                         .padding(16.dp)
@@ -112,4 +142,3 @@ fun NoteListScreen(
         }
     }
 }
-

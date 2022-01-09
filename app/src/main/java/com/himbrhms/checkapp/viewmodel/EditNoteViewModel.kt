@@ -91,7 +91,6 @@ class EditNoteViewModel @Inject constructor(
                             Note(
                                 title = title,
                                 notes = description,
-                                isSelected = note?.isSelected ?: false,
                                 id = note?.id,
                                 backgroundColorValue = backgroundColor.longValue
                             )

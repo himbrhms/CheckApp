@@ -10,7 +10,6 @@ data class Note(
     @PrimaryKey val id: Int? = null,
     val title: String,
     val notes: String = "",
-    val isSelected: Boolean, // TODO: remove, doesn't have to be persisted
     val backgroundColorValue: Long = Color.White.longValue
 ) {
     override fun toString(): String = "Note(id=$id, title=$title)"

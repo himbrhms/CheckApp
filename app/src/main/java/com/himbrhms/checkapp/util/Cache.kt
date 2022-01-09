@@ -9,7 +9,13 @@ open class Cache<KEY, VALUE> {
     }
 
     @Synchronized
-    fun delete(key: KEY) = values.remove(key)
+    fun remove(key: KEY) = values.remove(key)
+
+    @Synchronized
+    fun isEmpty(): Boolean = values.isEmpty()
+
+    @Synchronized
+    fun contains(key: KEY): Boolean = values.containsKey(key)
 
     @Synchronized
     fun getValue(key: KEY): VALUE? = values[key]
