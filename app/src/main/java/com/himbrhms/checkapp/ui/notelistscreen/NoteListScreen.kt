@@ -31,6 +31,7 @@ import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnClickNote
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnDeleteNotesUndo
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnLongClickNote
 import com.himbrhms.checkapp.ui.theme.DesertSand
+import com.himbrhms.checkapp.ui.util.StaggeredVerticalGrid
 import com.himbrhms.checkapp.util.Logger
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -154,7 +155,7 @@ fun NoteListScreen(
             }
         }
     ) {
-        LazyVerticalGrid(
+        LazyVerticalGrid( // TODO: this lazy vertical grid is not staggered...
             modifier = Modifier
                 .fillMaxSize()
                 .padding(2.dp),

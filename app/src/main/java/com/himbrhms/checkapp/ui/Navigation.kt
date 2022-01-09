@@ -1,5 +1,6 @@
 package com.himbrhms.checkapp.ui
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import com.himbrhms.checkapp.ui.editnotescreen.EditNoteScreen
 import com.himbrhms.checkapp.ui.notelistscreen.NoteListScreen
 import com.himbrhms.checkapp.ui.splashscreen.SplashScreen
 
+@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
