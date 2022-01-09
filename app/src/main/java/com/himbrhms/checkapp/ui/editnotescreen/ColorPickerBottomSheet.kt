@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.himbrhms.checkapp.viewmodel.EditNoteViewModel
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnColorChange
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ColorChange
 import com.himbrhms.checkapp.ui.theme.*
 
 @ExperimentalMaterialApi
@@ -50,7 +50,7 @@ internal fun ColorPickerBottomSheet() {
 
 @Composable
 private fun ColorCircle(backgroundColor: Color, viewModel: EditNoteViewModel = hiltViewModel()) {
-    Button(onClick = { viewModel.onEvent(OnColorChange(backgroundColor)) },
+    Button(onClick = { viewModel.onEvent(ColorChange(backgroundColor)) },
         modifier= Modifier
             .size(40.dp)
             .border(1.dp, Color.LightGray, CircleShape),  //avoid the oval shape

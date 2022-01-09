@@ -6,15 +6,15 @@ import com.himbrhms.checkapp.data.Note
 sealed class ViewModelEvent {
     abstract val name: String
 
-    object OnAddNote: ViewModelEvent() {
+    object AddNote: ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 
-    object OnDeleteNotes: ViewModelEvent() {
+    object DeleteSelectedNotes: ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 
-    object OnCopyNotes: ViewModelEvent() {
+    object CopySelectedNotes: ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 
@@ -22,27 +22,27 @@ sealed class ViewModelEvent {
         override val name: String = this::class.java.simpleName
     }
 
-    object OnDeleteNotesUndo: ViewModelEvent() {
+    object UndoDeletedNotes: ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 
-    data class OnClickNote(val note: Note): ViewModelEvent() {
+    data class ClickOnNote(val note: Note): ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 
-    data class OnLongClickNote(val note: Note): ViewModelEvent() {
+    data class LongClickOnNote(val note: Note): ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 
-    data class OnTitleChange(val title: String): ViewModelEvent() {
+    data class TitleChange(val title: String): ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 
-    data class OnDescriptionChange(val description: String): ViewModelEvent() {
+    data class DescriptionChange(val description: String): ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 
-    object OnToggleColorPickerBottomSheet: ViewModelEvent() {
+    object ToggleColorPickerBottomSheet: ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 
@@ -50,11 +50,11 @@ sealed class ViewModelEvent {
         override val name: String = this::class.java.simpleName
     }
 
-    object OnSaveNote: ViewModelEvent() {
+    object SaveNote: ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 
-    data class OnColorChange(val color: Color):  ViewModelEvent() {
+    data class ColorChange(val color: Color):  ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 }

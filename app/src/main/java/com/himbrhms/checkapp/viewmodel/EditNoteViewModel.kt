@@ -8,19 +8,19 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.himbrhms.checkapp.viewmodel.events.UiEvent
-import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnPopBackstack
-import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnShowHideColorPickerSheet
-import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnShowToast
+import com.himbrhms.checkapp.viewmodel.events.UiEvent.PopBackStack
+import com.himbrhms.checkapp.viewmodel.events.UiEvent.ShowHideColorPickerSheet
+import com.himbrhms.checkapp.viewmodel.events.UiEvent.ShowToast
 import com.himbrhms.checkapp.data.Note
-import com.himbrhms.checkapp.data.NoteCache
 import com.himbrhms.checkapp.data.NoteListRepo
+import com.himbrhms.checkapp.model.NoteActionManager
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnColorChange
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnDeleteNotes
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnDescriptionChange
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnToggleColorPickerBottomSheet
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnSaveNote
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnTitleChange
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ColorChange
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.DeleteSelectedNotes
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.DescriptionChange
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ToggleColorPickerBottomSheet
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.SaveNote
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.TitleChange
 import com.himbrhms.checkapp.ui.theme.ColorL
 import com.himbrhms.checkapp.ui.theme.LightDesertSand
 import com.himbrhms.checkapp.ui.theme.longValue
@@ -35,7 +35,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EditNoteViewModel @Inject constructor(
     private val repo: NoteListRepo,
-    private val noteCache: NoteCache,
+    private val actionManager: NoteActionManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -43,7 +43,7 @@ class EditNoteViewModel @Inject constructor(
         private val logger = Logger(this::class.className)
     }
 
-    var storedNote by mutableStateOf<Note?>(null)
+    var repoNote by mutableStateOf<Note?>(null)
         private set
 
     var title by mutableStateOf("")
@@ -65,7 +65,7 @@ class EditNoteViewModel @Inject constructor(
                 repo.getNoteById(itemId)?.let { note ->
                     title = note.title
                     description = note.notes ?: ""
-                    this@EditNoteViewModel.storedNote = note
+                    this@EditNoteViewModel.repoNote = note
                     backgroundColor = ColorL(note.backgroundColorValue)
                 }
             }
@@ -75,65 +75,56 @@ class EditNoteViewModel @Inject constructor(
     fun onEvent(event: ViewModelEvent) {
         logger.debug("onEvent(${event.name})")
         when (event) {
-            is OnTitleChange -> {
+            is TitleChange -> {
                 title = event.title
             }
-            is OnDescriptionChange -> {
+            is DescriptionChange -> {
                 description = event.description
             }
-            is OnDeleteNotes -> deleteNote()
-            is OnSaveNote -> {
+            is DeleteSelectedNotes -> {
+                send(PopBackStack) // back to NoteListScreen
+                if (isEmptyNote()) {
+                    send(ShowToast(message = "Empty Note dismissed"))
+                    return
+                }
+                val noteToDelete = Note(repoNote?.id, title, description, backgroundColor.longValue)
+                viewModelScope.launch { actionManager.onDeleteEditedNote(noteToDelete) }
+                NoteListViewModel.onNoteListScreen?.showSnackBar(
+                    message = "Note deleted",
+                    action = "UNDO"
+                )
+            }
+            is SaveNote -> {
                 viewModelScope.launch {
-                    if (!isEmptyItem()) {
+                    if (!isEmptyNote()) {
                         repo.insertNote(
                             Note(
                                 title = title,
                                 notes = description,
-                                id = storedNote?.id,
+                                id = repoNote?.id,
                                 backgroundColorValue = backgroundColor.longValue
                             )
                         )
                     } else {
-                        sendUiEvent(OnShowToast(message = "Empty Note dismissed"))
+                        send(ShowToast(message = "Empty Note dismissed"))
                     }
-                    sendUiEvent(OnPopBackstack)
+                    send(PopBackStack)
                 }
             }
-            is OnToggleColorPickerBottomSheet -> {
-                sendUiEvent(OnShowHideColorPickerSheet)
+            is ToggleColorPickerBottomSheet -> {
+                send(ShowHideColorPickerSheet)
             }
-            is OnColorChange -> {
+            is ColorChange -> {
                 backgroundColor = event.color
-                sendUiEvent(OnShowHideColorPickerSheet)
+                send(ShowHideColorPickerSheet)
             }
             else -> Unit
         }
     }
 
-    private fun deleteNote() {
-        viewModelScope.launch {
-            sendUiEvent(OnPopBackstack) // back to NoteListScreen
-            if (isEmptyItem()) return@launch
-            repo.deleteNote(storedNote)
-            noteCache.clear()
-            noteCache.insert(
-                Integer.MAX_VALUE, Note(
-                    title = title,
-                    notes = description,
-                    backgroundColorValue = backgroundColor.longValue
-                )
-            )
-        }
-        NoteListViewModel.onNoteListScreen?.showSnackBar("BLUB")
-    }
-
-    private fun isEmptyItem(): Boolean {
+    private fun isEmptyNote(): Boolean {
         return this.title.isBlank() && description.isBlank()
     }
 
-    private fun sendUiEvent(event: UiEvent) {
-        viewModelScope.launch {
-            _uiEvent.send(event)
-        }
-    }
+    private fun send(event: UiEvent) = viewModelScope.launch { _uiEvent.send(event) }
 }

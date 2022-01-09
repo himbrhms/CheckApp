@@ -7,6 +7,7 @@ import com.himbrhms.checkapp.data.NoteCache
 import com.himbrhms.checkapp.data.NoteListDatabase
 import com.himbrhms.checkapp.data.NoteListRepoImpl
 import com.himbrhms.checkapp.data.NoteListRepo
+import com.himbrhms.checkapp.model.NoteActionManager
 import com.himbrhms.checkapp.viewmodel.NoteListViewModel
 import com.himbrhms.checkapp.viewmodel.OnNoteListScreen
 import dagger.Module
@@ -31,5 +32,5 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNoteCache(): NoteCache = NoteCache()
+    fun provideNoteActionManager(noteListRepo: NoteListRepo) = NoteActionManager(noteListRepo)
 }

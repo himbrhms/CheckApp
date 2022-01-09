@@ -44,7 +44,7 @@ internal fun EditNoteSection(
         ) {
             TextField(
                 value = viewModel.title,
-                onValueChange = { onEvent(ViewModelEvent.OnTitleChange(it)) },
+                onValueChange = { onEvent(ViewModelEvent.TitleChange(it)) },
                 placeholder = { Text(text = "Title", fontSize = 20.sp) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = TextFieldDefaults.textFieldColors(
@@ -53,7 +53,7 @@ internal fun EditNoteSection(
             )
             TextField(
                 value = viewModel.description,
-                onValueChange = { onEvent(ViewModelEvent.OnDescriptionChange(it)) },
+                onValueChange = { onEvent(ViewModelEvent.DescriptionChange(it)) },
                 placeholder = { Text(text = "Notes") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -72,7 +72,7 @@ internal fun EditNoteSection(
                 .padding(4.dp)
         ) {
             FloatingActionButton(
-                onClick = { onEvent(ViewModelEvent.OnToggleColorPickerBottomSheet) },
+                onClick = { onEvent(ViewModelEvent.ToggleColorPickerBottomSheet) },
                 modifier = Modifier.scale(0.8f),
                 backgroundColor = Color.DesertSand,
             ) {
@@ -98,7 +98,7 @@ internal fun EditNoteSection(
             Column() {
                 FloatingActionButton(
                     onClick = {
-                        onEvent(ViewModelEvent.OnDeleteNotes)
+                        onEvent(ViewModelEvent.DeleteSelectedNotes)
                     },
                     modifier = Modifier.scale(0.8f),
                     backgroundColor = Color.DesertSand,
@@ -112,7 +112,7 @@ internal fun EditNoteSection(
             }
             Spacer(Modifier.weight(20f))
             FloatingActionButton(
-                onClick = { onEvent(ViewModelEvent.OnSaveNote) },
+                onClick = { onEvent(ViewModelEvent.SaveNote) },
                 backgroundColor = Color.DesertSand,
                 modifier = Modifier.scale(0.8f),
             ) {

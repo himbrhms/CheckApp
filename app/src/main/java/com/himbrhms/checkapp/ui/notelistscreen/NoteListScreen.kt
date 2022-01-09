@@ -26,13 +26,11 @@ import com.himbrhms.checkapp.R
 import com.himbrhms.checkapp.viewmodel.events.UiEvent
 import com.himbrhms.checkapp.viewmodel.NoteListViewModel
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnAddNote
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnClickNote
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnDeleteNotesUndo
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnLongClickNote
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.AddNote
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ClickOnNote
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.UndoDeletedNotes
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.LongClickOnNote
 import com.himbrhms.checkapp.ui.theme.DesertSand
-import com.himbrhms.checkapp.ui.util.StaggeredVerticalGrid
-import com.himbrhms.checkapp.util.Logger
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -41,7 +39,7 @@ import kotlinx.coroutines.launch
 @ExperimentalFoundationApi
 @Composable
 fun NoteListScreen(
-    onNavigate: (UiEvent.OnNavigate) -> Unit,
+    onNavigate: (UiEvent.Navigate) -> Unit,
     viewModel: NoteListViewModel = hiltViewModel()
 ) {
     val noteList = viewModel.noteList.collectAsState(initial = emptyList())
@@ -51,7 +49,7 @@ fun NoteListScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is UiEvent.OnShowSnackBar -> {
+                is UiEvent.ShowSnackBar -> {
                     viewModel.viewModelScope.launch {
                         scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
                         val result = scaffoldState.snackbarHostState.showSnackbar(
@@ -59,14 +57,14 @@ fun NoteListScreen(
                             actionLabel = event.action
                         )
                         if (result == SnackbarResult.ActionPerformed) {
-                            viewModel.onEvent(OnDeleteNotesUndo)
+                            viewModel.onEvent(UndoDeletedNotes)
                         }
                     }
                 }
-                is UiEvent.OnNavigate -> {
+                is UiEvent.Navigate -> {
                     onNavigate(event)
                 }
-                is UiEvent.OnShowHideNoteListBottomSheet -> {
+                is UiEvent.ShowHideNoteListBottomSheet -> {
                     if (noteListBottomSheetState?.isVisible == true) {
                         noteListBottomSheetState?.hide()
                     } else if (noteListBottomSheetState?.isVisible == false) {
@@ -109,7 +107,7 @@ fun NoteListScreen(
                     FloatingActionButton(
                         onClick = {
                             selectedNotes.clear()
-                            viewModel.onEvent(ViewModelEvent.OnCopyNotes)
+                            viewModel.onEvent(ViewModelEvent.CopySelectedNotes)
                         },
                         modifier = Modifier.scale(0.8f),
                         backgroundColor = Color.DesertSand,
@@ -129,7 +127,7 @@ fun NoteListScreen(
                     FloatingActionButton(
                         onClick = {
                             selectedNotes.clear()
-                            viewModel.onEvent(ViewModelEvent.OnDeleteNotes)
+                            viewModel.onEvent(ViewModelEvent.DeleteSelectedNotes)
                         },
                         modifier = Modifier.scale(0.8f),
                         backgroundColor = Color.DesertSand,
@@ -142,7 +140,7 @@ fun NoteListScreen(
                     }
                 }
                 FloatingActionButton(
-                    onClick = { viewModel.onEvent(OnAddNote) },
+                    onClick = { viewModel.onEvent(AddNote) },
                     modifier = Modifier.scale(0.8f),
                     backgroundColor = Color.DesertSand,
                 ) {
@@ -172,13 +170,13 @@ fun NoteListScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .combinedClickable(
-                            onClick = { viewModel.onEvent(OnClickNote(note)) },
+                            onClick = { viewModel.onEvent(ClickOnNote(note)) },
                             onLongClick = {
                                 selectedNotes.apply {
                                     if (contains(note.id)) remove(note.id) else add(note.id)
                                 }
                                 buttonsVisible.value = !selectedNotes.isEmpty()
-                                viewModel.onEvent(OnLongClickNote(note))
+                                viewModel.onEvent(LongClickOnNote(note))
                             }
                         )
                         .padding(16.dp)
