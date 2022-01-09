@@ -22,16 +22,23 @@ import javax.inject.Inject
 class NoteListViewModel @Inject constructor(
     private val repo: NoteListRepo,
     private val noteCache: NoteCache
-) : ViewModel() {
+) : ViewModel(), OnNoteListScreen {
 
     companion object {
         private val logger = Logger(this::class.className)
+        // TODO: How to show SnackBar on another Screen/ViewModel?
+        //  changing coroutine scope did not work
+        var onNoteListScreen: OnNoteListScreen? = null // a little bit dirty...
     }
 
     val noteList = repo.getNoteList()
 
     private val _uiEvent: Channel<UiEvent> = Channel()
     val uiEvent: Flow<UiEvent> = _uiEvent.receiveAsFlow()
+
+    init {
+        onNoteListScreen = this
+    }
 
     fun onEvent(event: ViewModelEvent) {
         logger.info("onEvent(event=${event.name})")
@@ -44,12 +51,16 @@ class NoteListViewModel @Inject constructor(
             is ViewModelEvent.OnDeleteNotes -> {
                 if (noteCache.isEmpty()) return
                 deleteNotes()
-                sendUiEvent(OnShowSnackBar("Note deleted", action = "UNDO"))
+                showSnackBar(message = "Note deleted", action = "UNDO")
             }
             is ViewModelEvent.OnDeleteNotesUndo -> undoDeleteNotes()
             is ViewModelEvent.OnCopyNotes -> copyNotes()
             else -> logger.warn("onEvent: event=${event.name} unhandled")
         }
+    }
+
+    override fun showSnackBar(message: String, action: String?) {
+        sendUiEvent(OnShowSnackBar("Note deleted", action = "UNDO"))
     }
 
     private var deletedCalled = false

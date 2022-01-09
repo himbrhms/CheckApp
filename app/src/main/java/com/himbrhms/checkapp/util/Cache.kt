@@ -1,7 +1,7 @@
 package com.himbrhms.checkapp.util
 
 open class Cache<KEY, VALUE> {
-    private val values = mutableMapOf<KEY, VALUE>()
+    private val values = mutableMapOf<KEY?, VALUE>()
 
     @Synchronized
     fun insert(key: KEY, value: VALUE) {
@@ -21,7 +21,7 @@ open class Cache<KEY, VALUE> {
     fun getValue(key: KEY): VALUE? = values[key]
 
     @Synchronized
-    fun getCacheItems(): Map<KEY, VALUE> = values
+    fun getCacheItems(): Map<KEY?, VALUE> = values
 
     @Synchronized
     fun getAllValues(): List<VALUE> = values.values.toList()
