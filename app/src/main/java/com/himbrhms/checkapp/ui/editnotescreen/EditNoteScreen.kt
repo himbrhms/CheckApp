@@ -46,15 +46,15 @@ fun EditNoteScreen(
         }
     }
     SaveOnBackPressed { event ->
-        viewModel.onEditNoteEvent(event)
+        viewModel.onEvent(event)
     }
     Scaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier
             .fillMaxSize()
     ) {
-        EditNoteColumn(viewModel) { event ->
-            viewModel.onEditNoteEvent(event)
+        EditNoteSection(viewModel) { event ->
+            viewModel.onEvent(event)
         }
         ColorPickerBottomSheet()
     }

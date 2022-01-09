@@ -8,6 +8,5 @@ import androidx.room.RoomDatabase
     entities = [Note::class],
 )
 abstract class NoteListDatabase : RoomDatabase() {
-
     abstract val noteDao: NoteDao
 }

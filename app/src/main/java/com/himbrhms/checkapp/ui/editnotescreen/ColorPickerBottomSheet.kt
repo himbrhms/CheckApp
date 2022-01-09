@@ -50,7 +50,7 @@ internal fun ColorPickerBottomSheet() {
 
 @Composable
 private fun ColorCircle(backgroundColor: Color, viewModel: EditNoteViewModel = hiltViewModel()) {
-    Button(onClick = { viewModel.onEditNoteEvent(OnColorChange(backgroundColor)) },
+    Button(onClick = { viewModel.onEvent(OnColorChange(backgroundColor)) },
         modifier= Modifier
             .size(40.dp)
             .border(1.dp, Color.LightGray, CircleShape),  //avoid the oval shape

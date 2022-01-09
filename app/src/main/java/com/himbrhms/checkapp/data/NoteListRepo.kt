@@ -6,7 +6,7 @@ interface NoteListRepo {
 
     suspend fun insertNote(note: Note)
 
-    suspend fun deleteNote(note: Note)
+    suspend fun deleteNote(note: Note?)
 
     suspend fun getNoteById(id: Int): Note?
 

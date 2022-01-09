@@ -23,7 +23,7 @@ import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
 import com.himbrhms.checkapp.ui.theme.DesertSand
 
 @Composable
-internal fun EditNoteColumn(
+internal fun EditNoteSection(
     viewModel: EditNoteViewModel,
     onEvent: (ViewModelEvent) -> Unit
 ) {
@@ -96,7 +96,9 @@ internal fun EditNoteColumn(
                 }
                 Spacer(Modifier.weight(1f))
                 FloatingActionButton(
-                    onClick = { },
+                    onClick = {
+                        onEvent(ViewModelEvent.OnDeleteNotes)
+                    },
                     modifier = Modifier.scale(0.8f),
                     backgroundColor = Color.DesertSand,
                 ) {

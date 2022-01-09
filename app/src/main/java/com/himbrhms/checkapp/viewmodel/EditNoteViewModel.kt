@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.himbrhms.checkapp.viewmodel.events.UiEvent
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnPopBackstack
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnShowHideColorPickerSheet
+import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnShowSnackBar
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnShowToast
 import com.himbrhms.checkapp.data.Note
 import com.himbrhms.checkapp.data.NoteListRepo
@@ -70,7 +71,7 @@ class EditNoteViewModel @Inject constructor(
         }
     }
 
-    fun onEditNoteEvent(event: ViewModelEvent) {
+    fun onEvent(event: ViewModelEvent) {
         logger.debug("onEvent(${event.name})")
         when (event) {
             is OnTitleChange -> {
@@ -81,7 +82,8 @@ class EditNoteViewModel @Inject constructor(
             }
             is OnDeleteNotes -> {
                 viewModelScope.launch {
-                    repo.deleteNote(note!!)
+                    repo.deleteNote(note)
+                    sendUiEvent(OnPopBackstack)
                 }
             }
             is OnSaveNote -> {
@@ -96,17 +98,17 @@ class EditNoteViewModel @Inject constructor(
                             )
                         )
                     } else {
-                        sendAsyncUiEvent(OnShowToast(message = "Empty Note dismissed"))
+                        sendUiEvent(OnShowToast(message = "Empty Note dismissed"))
                     }
-                    sendAsyncUiEvent(OnPopBackstack)
+                    sendUiEvent(OnPopBackstack)
                 }
             }
             is OnToggleColorPickerBottomSheet -> {
-                sendAsyncUiEvent(OnShowHideColorPickerSheet)
+                sendUiEvent(OnShowHideColorPickerSheet)
             }
             is OnColorChange -> {
                 backgroundColor = event.color
-                sendAsyncUiEvent(OnShowHideColorPickerSheet)
+                sendUiEvent(OnShowHideColorPickerSheet)
             }
             else -> Unit
         }
@@ -116,7 +118,7 @@ class EditNoteViewModel @Inject constructor(
         return this.title.isBlank() && description.isBlank()
     }
 
-    private fun sendAsyncUiEvent(event: UiEvent) {
+    private fun sendUiEvent(event: UiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
         }
