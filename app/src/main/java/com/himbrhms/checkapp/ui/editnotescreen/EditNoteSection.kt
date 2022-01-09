@@ -55,7 +55,9 @@ internal fun EditNoteSection(
                 value = viewModel.description,
                 onValueChange = { onEvent(ViewModelEvent.OnDescriptionChange(it)) },
                 placeholder = { Text(text = "Notes") },
-                modifier = Modifier.fillMaxWidth().heightIn(min = 60.dp, max = 200.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 80.dp, max = 200.dp),
                 singleLine = false,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = viewModel.backgroundColor
@@ -64,7 +66,7 @@ internal fun EditNoteSection(
         }
         Row(
             modifier = Modifier
-                .heightIn(min = 60.dp)
+                .heightIn(min = 60.dp, max = 120.dp)
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(4.dp)
@@ -93,18 +95,20 @@ internal fun EditNoteSection(
                 )
             }
             Spacer(Modifier.weight(1f))
-            FloatingActionButton(
-                onClick = {
-                    onEvent(ViewModelEvent.OnDeleteNotes)
-                },
-                modifier = Modifier.scale(0.8f),
-                backgroundColor = Color.DesertSand,
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = "Add Picturee",
-                    modifier = Modifier.scale(1.4f)
-                )
+            Column() {
+                FloatingActionButton(
+                    onClick = {
+                        onEvent(ViewModelEvent.OnDeleteNotes)
+                    },
+                    modifier = Modifier.scale(0.8f),
+                    backgroundColor = Color.DesertSand,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = "Delete",
+                        modifier = Modifier.scale(1.4f)
+                    )
+                }
             }
             Spacer(Modifier.weight(20f))
             FloatingActionButton(
@@ -121,100 +125,3 @@ internal fun EditNoteSection(
         }
     }
 }
-/*Column(
-    modifier = Modifier
-        .fillMaxSize()
-        .padding(10.dp)
-        .border(2.dp, color = Color.LightGray, shape = RoundedCornerShape(16.dp))
-        .clip(RoundedCornerShape(16.dp))
-        .shadow(elevation = 10.dp)
-        .background(viewModel.backgroundColor)
-) {
-    TextField(
-        value = viewModel.title,
-        onValueChange = { onEvent(ViewModelEvent.OnTitleChange(it)) },
-        placeholder = { Text(text = "Title", fontSize = 20.sp) },
-        modifier = Modifier.fillMaxWidth(),
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = viewModel.backgroundColor
-        ),
-    )
-    TextField(
-        value = viewModel.description,
-        onValueChange = { onEvent(ViewModelEvent.OnDescriptionChange(it)) },
-        placeholder = { Text(text = "Notes") },
-        modifier = Modifier
-            .fillMaxWidth()
-            .weight(1.0f),
-        singleLine = false,
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = viewModel.backgroundColor
-        )
-    )
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(4.dp)
-    ) {
-        FloatingActionButton(
-            onClick = { onEvent(ViewModelEvent.OnToggleColorPickerBottomSheet) },
-            modifier = Modifier.scale(0.8f),
-            backgroundColor = Color.DesertSand,
-        ) {
-            Icon(
-                painterResource(id = R.drawable.ic_outline_color_lens_24),
-                contentDescription = "Colorize",
-                modifier = Modifier.scale(1.4f)
-            )
-        }
-        Spacer(Modifier.weight(1f))
-        FloatingActionButton(
-            onClick = { onEvent(ViewModelEvent.OnAddImage) },
-            modifier = Modifier.scale(0.8f),
-            backgroundColor = Color.DesertSand,
-        ) {
-            Icon(
-                painterResource(id = R.drawable.ic_outline_add_photo_alternate_24),
-                contentDescription = "Add Picturee",
-                modifier = Modifier.scale(1.4f)
-            )
-        }
-        Spacer(Modifier.weight(1f))
-        FloatingActionButton(
-            onClick = { },
-            modifier = Modifier.scale(0.8f),
-            backgroundColor = Color.DesertSand,
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Delete,
-                contentDescription = "Add Picturee",
-                modifier = Modifier.scale(1.4f)
-            )
-        }
-        Spacer(Modifier.weight(20f))
-        FloatingActionButton(
-            onClick = { onEvent(ViewModelEvent.OnSaveNote) },
-            backgroundColor = Color.DesertSand,
-            modifier = Modifier.scale(0.8f),
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Check,
-                contentDescription = "Check",
-                modifier = Modifier.scale(1.4f)
-            )
-        }
-    }
-}*/
-
-/*
-@Preview
-@Composable
-fun NotePaperPreview() {
-    NotePaper(
-        title = "Preview",
-        description = "PreviewDescription"
-    ) {
-        EditNoteEvent.OnSaveItem
-    }
-}*/

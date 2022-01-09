@@ -1,9 +1,6 @@
 package com.himbrhms.checkapp.ui.notelistscreen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.fadeIn
+import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -85,7 +82,8 @@ fun NoteListScreen(
             Column {
                 AnimatedVisibility(
                     visible = buttonsVisible.value,
-                    enter = fadeIn()
+                    enter = expandVertically(),
+                    exit = shrinkVertically()
                 ) {
                     FloatingActionButton(
                         onClick = {
@@ -102,33 +100,45 @@ fun NoteListScreen(
                         )
                     }
                 }
-                FloatingActionButton(
-                    onClick = {
-                        selectedNotes.clear()
-                        viewModel.onEvent(ViewModelEvent.OnCopyNotes)
-                    },
-                    modifier = Modifier.scale(0.8f),
-                    backgroundColor = Color.DesertSand,
+                AnimatedVisibility(
+                    visible = buttonsVisible.value,
+                    enter = expandVertically(),
+                    exit = shrinkVertically()
                 ) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_baseline_content_copy_24),
-                        contentDescription = "Copy",
-                        modifier = Modifier.scale(1.4f)
-                    )
+                    FloatingActionButton(
+                        onClick = {
+                            selectedNotes.clear()
+                            viewModel.onEvent(ViewModelEvent.OnCopyNotes)
+                        },
+                        modifier = Modifier.scale(0.8f),
+                        backgroundColor = Color.DesertSand,
+                    ) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_baseline_content_copy_24),
+                            contentDescription = "Copy",
+                            modifier = Modifier.scale(1.4f)
+                        )
+                    }
                 }
-                FloatingActionButton(
-                    onClick = {
-                        selectedNotes.clear()
-                        viewModel.onEvent(ViewModelEvent.OnDeleteNotes)
-                    },
-                    modifier = Modifier.scale(0.8f),
-                    backgroundColor = Color.DesertSand,
+                AnimatedVisibility(
+                    visible = buttonsVisible.value,
+                    enter = expandVertically(),
+                    exit = shrinkVertically()
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Delete,
-                        contentDescription = "Delete",
-                        modifier = Modifier.scale(1.4f)
-                    )
+                    FloatingActionButton(
+                        onClick = {
+                            selectedNotes.clear()
+                            viewModel.onEvent(ViewModelEvent.OnDeleteNotes)
+                        },
+                        modifier = Modifier.scale(0.8f),
+                        backgroundColor = Color.DesertSand,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = "Delete",
+                            modifier = Modifier.scale(1.4f)
+                        )
+                    }
                 }
                 FloatingActionButton(
                     onClick = { viewModel.onEvent(OnAddNote) },
@@ -163,11 +173,10 @@ fun NoteListScreen(
                         .combinedClickable(
                             onClick = { viewModel.onEvent(OnClickNote(note)) },
                             onLongClick = {
-                                if (selectedNotes.contains(note.id)) {
-                                    selectedNotes.remove(note.id)
-                                } else {
-                                    selectedNotes.add(note.id)
+                                selectedNotes.apply {
+                                    if (contains(note.id)) remove(note.id) else add(note.id)
                                 }
+                                buttonsVisible.value = !selectedNotes.isEmpty()
                                 viewModel.onEvent(OnLongClickNote(note))
                             }
                         )
