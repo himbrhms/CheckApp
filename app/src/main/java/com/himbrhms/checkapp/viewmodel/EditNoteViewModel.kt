@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.model
+package com.himbrhms.checkapp.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,19 +7,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.himbrhms.checkapp.model.events.UiEvent
-import com.himbrhms.checkapp.model.events.UiEvent.OnPopBackstack
-import com.himbrhms.checkapp.model.events.UiEvent.OnShowHideColorPickerSheet
-import com.himbrhms.checkapp.model.events.UiEvent.OnShowToast
+import com.himbrhms.checkapp.viewmodel.events.UiEvent
+import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnPopBackstack
+import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnShowHideColorPickerSheet
+import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnShowToast
 import com.himbrhms.checkapp.data.Note
 import com.himbrhms.checkapp.data.NoteListRepo
-import com.himbrhms.checkapp.model.events.ModelEvent
-import com.himbrhms.checkapp.model.events.ModelEvent.OnColorChange
-import com.himbrhms.checkapp.model.events.ModelEvent.OnDeleteNote
-import com.himbrhms.checkapp.model.events.ModelEvent.OnDescriptionChange
-import com.himbrhms.checkapp.model.events.ModelEvent.OnToggleColorPickerBottomSheet
-import com.himbrhms.checkapp.model.events.ModelEvent.OnSaveNote
-import com.himbrhms.checkapp.model.events.ModelEvent.OnTitleChange
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnColorChange
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnDeleteNotes
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnDescriptionChange
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnToggleColorPickerBottomSheet
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnSaveNote
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnTitleChange
 import com.himbrhms.checkapp.ui.theme.ColorL
 import com.himbrhms.checkapp.ui.theme.LightDesertSand
 import com.himbrhms.checkapp.ui.theme.longValue
@@ -70,7 +70,7 @@ class EditNoteViewModel @Inject constructor(
         }
     }
 
-    fun onEditNoteEvent(event: ModelEvent) {
+    fun onEditNoteEvent(event: ViewModelEvent) {
         logger.debug("onEvent(${event.name})")
         when (event) {
             is OnTitleChange -> {
@@ -79,7 +79,7 @@ class EditNoteViewModel @Inject constructor(
             is OnDescriptionChange -> {
                 description = event.description
             }
-            is OnDeleteNote -> {
+            is OnDeleteNotes -> {
                 viewModelScope.launch {
                     repo.deleteNote(note!!)
                 }

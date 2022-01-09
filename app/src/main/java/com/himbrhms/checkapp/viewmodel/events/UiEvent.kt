@@ -1,4 +1,4 @@
-package com.himbrhms.checkapp.model.events
+package com.himbrhms.checkapp.viewmodel.events
 
 sealed class UiEvent {
     object OnPopBackstack : UiEvent()

@@ -19,13 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.himbrhms.checkapp.model.events.ModelEvent
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
 import com.himbrhms.checkapp.ui.theme.ColorL
 
 @Composable
 internal fun NoteItem(
     note: Note,
-    onEvent: (ModelEvent) -> Unit,
+    onEvent: (ViewModelEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val boxBorderWidth = if (note.isSelected) 4.dp else 2.dp
@@ -64,7 +64,7 @@ internal fun NoteItem(
                 }
             }
             IconButton(onClick = {
-                onEvent(ModelEvent.OnDeleteNote(note))
+                onEvent(ViewModelEvent.OnDeleteNotes(note))
             }) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,
@@ -80,6 +80,6 @@ internal fun NoteItem(
 private fun ComposablePreview() {
     NoteItem(
         note = Note(1, "Preview", "Desc", true, Color.White.value.toLong()),
-        onEvent = { ModelEvent.OnAddNote },
+        onEvent = { ViewModelEvent.OnAddNote },
     )
 }

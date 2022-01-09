@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.himbrhms.checkapp.model.EditNoteViewModel
-import com.himbrhms.checkapp.model.events.ModelEvent.OnColorChange
+import com.himbrhms.checkapp.viewmodel.EditNoteViewModel
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnColorChange
 import com.himbrhms.checkapp.ui.theme.*
 
 @ExperimentalMaterialApi

@@ -9,11 +9,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.himbrhms.checkapp.model.events.UiEvent.OnShowHideColorPickerSheet
-import com.himbrhms.checkapp.model.events.UiEvent.OnPopBackstack
-import com.himbrhms.checkapp.model.events.UiEvent.OnShowToast
-import com.himbrhms.checkapp.model.EditNoteViewModel
-import com.himbrhms.checkapp.model.events.ModelEvent
+import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnShowHideColorPickerSheet
+import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnPopBackstack
+import com.himbrhms.checkapp.viewmodel.events.UiEvent.OnShowToast
+import com.himbrhms.checkapp.viewmodel.EditNoteViewModel
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
 import com.himbrhms.checkapp.util.Logger
 import kotlinx.coroutines.flow.collect
 
@@ -61,8 +61,8 @@ fun EditNoteScreen(
 }
 
 @Composable
-private fun SaveOnBackPressed(onEventCallback: (ModelEvent) -> Unit) {
+private fun SaveOnBackPressed(onEventCallback: (ViewModelEvent) -> Unit) {
     BackHandler {
-        onEventCallback(ModelEvent.OnSaveNote)
+        onEventCallback(ViewModelEvent.OnSaveNote)
     }
 }

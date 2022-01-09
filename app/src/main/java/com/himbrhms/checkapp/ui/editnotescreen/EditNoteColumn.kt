@@ -18,14 +18,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.himbrhms.checkapp.R
-import com.himbrhms.checkapp.model.EditNoteViewModel
-import com.himbrhms.checkapp.model.events.ModelEvent
+import com.himbrhms.checkapp.viewmodel.EditNoteViewModel
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
 import com.himbrhms.checkapp.ui.theme.DesertSand
 
 @Composable
 internal fun EditNoteColumn(
     viewModel: EditNoteViewModel,
-    onEvent: (ModelEvent) -> Unit
+    onEvent: (ViewModelEvent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -38,7 +38,7 @@ internal fun EditNoteColumn(
     ) {
         TextField(
             value = viewModel.title,
-            onValueChange = { onEvent(ModelEvent.OnTitleChange(it)) },
+            onValueChange = { onEvent(ViewModelEvent.OnTitleChange(it)) },
             placeholder = { Text(text = "Title", fontSize = 20.sp) },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
@@ -47,7 +47,7 @@ internal fun EditNoteColumn(
         )
         TextField(
             value = viewModel.description,
-            onValueChange = { onEvent(ModelEvent.OnDescriptionChange(it)) },
+            onValueChange = { onEvent(ViewModelEvent.OnDescriptionChange(it)) },
             placeholder = { Text(text = "Notes") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -64,7 +64,7 @@ internal fun EditNoteColumn(
                 .padding(4.dp)
         ) {
             FloatingActionButton(
-                onClick = { onEvent(ModelEvent.OnToggleColorPickerBottomSheet) },
+                onClick = { onEvent(ViewModelEvent.OnToggleColorPickerBottomSheet) },
                 modifier = Modifier.scale(0.8f),
                 backgroundColor = Color.DesertSand,
             ) {
@@ -76,7 +76,7 @@ internal fun EditNoteColumn(
             }
             Spacer(Modifier.weight(1f))
             FloatingActionButton(
-                onClick = { onEvent(ModelEvent.OnAddImage) },
+                onClick = { onEvent(ViewModelEvent.OnAddImage) },
                 modifier = Modifier.scale(0.8f),
                 backgroundColor = Color.DesertSand,
             ) {
@@ -100,7 +100,7 @@ internal fun EditNoteColumn(
             }
             Spacer(Modifier.weight(20f))
             FloatingActionButton(
-                onClick = { onEvent(ModelEvent.OnSaveNote) },
+                onClick = { onEvent(ViewModelEvent.OnSaveNote) },
                 backgroundColor = Color.DesertSand,
                 modifier = Modifier.scale(0.8f),
             ) {

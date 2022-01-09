@@ -20,13 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import com.himbrhms.checkapp.R
-import com.himbrhms.checkapp.model.events.UiEvent
-import com.himbrhms.checkapp.model.NoteListViewModel
-import com.himbrhms.checkapp.model.events.ModelEvent
-import com.himbrhms.checkapp.model.events.ModelEvent.OnAddNote
-import com.himbrhms.checkapp.model.events.ModelEvent.OnClickNote
-import com.himbrhms.checkapp.model.events.ModelEvent.OnDeleteNoteUndo
-import com.himbrhms.checkapp.ui.editnotescreen.colorBottomSheetState
+import com.himbrhms.checkapp.viewmodel.events.UiEvent
+import com.himbrhms.checkapp.viewmodel.NoteListViewModel
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnAddNote
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnClickNote
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.OnDeleteNotesUndo
 import com.himbrhms.checkapp.ui.theme.DesertSand
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -51,7 +50,7 @@ fun NoteListScreen(
                             actionLabel = event.action
                         )
                         if (result == SnackbarResult.ActionPerformed) {
-                            viewModel.onEvent(OnDeleteNoteUndo)
+                            viewModel.onEvent(OnDeleteNotesUndo)
                         }
                     }
                 }
@@ -103,7 +102,7 @@ fun NoteListScreen(
                             onClick = { viewModel.onEvent(OnClickNote(note)) },
                             onLongClick = {
                                 viewModel.onEvent(
-                                    ModelEvent.OnToggleSelectedNote(note)
+                                    ViewModelEvent.OnSelectedNote(note)
                                 )
                             }
                         )
