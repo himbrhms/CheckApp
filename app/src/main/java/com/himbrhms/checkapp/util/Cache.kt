@@ -21,7 +21,10 @@ open class Cache<KEY, VALUE> {
     fun getValue(key: KEY): VALUE? = values[key]
 
     @Synchronized
-    fun getAllValues(): Map<KEY, VALUE> = values
+    fun getCacheItems(): Map<KEY, VALUE> = values
+
+    @Synchronized
+    fun getAllValues(): List<VALUE> = values.values.toList()
 
     @Synchronized
     fun clear() = values.clear()

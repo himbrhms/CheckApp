@@ -47,11 +47,22 @@ class NoteListViewModel @Inject constructor(
                 sendUiEvent(OnShowSnackBar("Note deleted", action = "UNDO"))
             }
             is ViewModelEvent.OnDeleteNotesUndo -> undoDeleteNotes()
+            is ViewModelEvent.OnCopyNotes -> copyNotes()
             else -> logger.warn("onEvent: event=${event.name} unhandled")
         }
     }
 
     private var deletedCalled = false
+
+    private fun copyNotes() {
+        if (noteCache.isEmpty()) return
+        viewModelScope.launch {
+            noteCache.getAllValues().forEach { note ->
+                repo.insertNote(note.copy(id = null))
+            }
+            noteCache.clear()
+        }
+    }
 
     private fun onNoteSelected(event: ViewModelEvent.OnLongClickNote) {
         val selectedNote = event.note
@@ -69,7 +80,7 @@ class NoteListViewModel @Inject constructor(
     private fun deleteNotes() {
         deletedCalled = true
         viewModelScope.launch {
-            val notesToDelete = noteCache.getAllValues()
+            val notesToDelete = noteCache.getCacheItems()
             notesToDelete.values.forEach { noteToDelete ->
                 repo.deleteNote(noteToDelete)
             }
@@ -77,7 +88,7 @@ class NoteListViewModel @Inject constructor(
     }
 
     private fun undoDeleteNotes() {
-        val deletedNotes = noteCache.getAllValues()
+        val deletedNotes = noteCache.getCacheItems()
         logger.info("OnDeleteNoteUndo: ${deletedNotes.values.joinToString()}")
         viewModelScope.launch {
             deletedNotes.values.forEach { note ->

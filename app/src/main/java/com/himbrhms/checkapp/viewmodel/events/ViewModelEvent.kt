@@ -14,6 +14,14 @@ sealed class ViewModelEvent {
         override val name: String = this::class.java.simpleName
     }
 
+    object OnCopyNotes: ViewModelEvent() {
+        override val name: String = this::class.java.simpleName
+    }
+
+    object OnShareNotes: ViewModelEvent() {
+        override val name: String = this::class.java.simpleName
+    }
+
     object OnDeleteNotesUndo: ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }

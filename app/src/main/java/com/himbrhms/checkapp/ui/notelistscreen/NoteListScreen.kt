@@ -1,5 +1,9 @@
 package com.himbrhms.checkapp.ui.notelistscreen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -34,6 +38,7 @@ import com.himbrhms.checkapp.util.Logger
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
@@ -43,6 +48,8 @@ fun NoteListScreen(
 ) {
     val noteList = viewModel.noteList.collectAsState(initial = emptyList())
     val scaffoldState = rememberScaffoldState()
+    val selectedNotes = remember { mutableStateListOf<Int?>() }
+    val buttonsVisible = remember { mutableStateOf(false) }
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -72,13 +79,43 @@ fun NoteListScreen(
             }
         }
     }
-    val selectedNotes = remember {
-        mutableStateListOf<Int?>()
-    }
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
             Column {
+                AnimatedVisibility(
+                    visible = buttonsVisible.value,
+                    enter = fadeIn()
+                ) {
+                    FloatingActionButton(
+                        onClick = {
+                            selectedNotes.clear()
+                            viewModel.onEvent(ViewModelEvent.OnShareNotes)
+                        },
+                        modifier = Modifier.scale(0.8f),
+                        backgroundColor = Color.DesertSand,
+                    ) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_baseline_share_24),
+                            contentDescription = "Share",
+                            modifier = Modifier.scale(1.4f)
+                        )
+                    }
+                }
+                FloatingActionButton(
+                    onClick = {
+                        selectedNotes.clear()
+                        viewModel.onEvent(ViewModelEvent.OnCopyNotes)
+                    },
+                    modifier = Modifier.scale(0.8f),
+                    backgroundColor = Color.DesertSand,
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_baseline_content_copy_24),
+                        contentDescription = "Copy",
+                        modifier = Modifier.scale(1.4f)
+                    )
+                }
                 FloatingActionButton(
                     onClick = {
                         selectedNotes.clear()
@@ -107,7 +144,6 @@ fun NoteListScreen(
             }
         }
     ) {
-        val logger = Logger("LazyVerticalGrid")
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxSize()
@@ -115,7 +151,6 @@ fun NoteListScreen(
             cells = GridCells.Fixed(2)
         ) {
             items(noteList.value) { note ->
-                logger.info("selectedNotes=${selectedNotes.joinToString()}")
                 NoteItem(
                     note = note,
                     borderStroke = if (selectedNotes.contains(note.id)) {
