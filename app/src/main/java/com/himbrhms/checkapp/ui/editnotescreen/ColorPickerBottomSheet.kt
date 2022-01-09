@@ -23,7 +23,7 @@ internal fun ColorPickerBottomSheet() {
     ModalBottomSheetLayout(
         sheetState = colorBottomSheetState!!,
         sheetContent = {
-            Spacer(modifier = Modifier.size(8.dp))
+            Spacer(modifier = Modifier.size(10.dp))
             Box(modifier = Modifier.fillMaxWidth()) {
                 Row(Modifier.padding(4.dp)) {
                     ColorCircle(Color.White)
@@ -43,6 +43,7 @@ internal fun ColorPickerBottomSheet() {
                     ColorCircle(Color.MagicMind)
                 }
             }
+            Spacer(modifier = Modifier.size(10.dp))
         }) {
     }
 }
