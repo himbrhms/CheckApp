@@ -16,11 +16,15 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.himbrhms.checkapp.R
 import com.himbrhms.checkapp.viewmodel.EditNoteViewModel
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ContentChange
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ContentFocusChange
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.TitleChange
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.TitleFocusChange
 import com.himbrhms.checkapp.ui.theme.DesertSand
+import com.himbrhms.checkapp.ui.util.HintTextField
 
 @Composable
 internal fun EditNoteSection(
@@ -42,26 +46,26 @@ internal fun EditNoteSection(
                 .background(viewModel.backgroundColor)
                 .weight(10f)
         ) {
-            TextField(
-                value = viewModel.title,
-                onValueChange = { onEvent(ViewModelEvent.TitleChange(it)) },
-                placeholder = { Text(text = "Title", fontSize = 20.sp) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = viewModel.backgroundColor
-                ),
+            val titleState = viewModel.noteTitle.value
+            val contentState = viewModel.noteContent.value
+            HintTextField(
+                text = titleState.text,
+                textStyle = MaterialTheme.typography.h5,
+                onValueChange = { onEvent(TitleChange(it)) },
+                hint = titleState.hint,
+                isHintVisible = titleState.isHintVisible,
+                onFocusChange = { onEvent(TitleFocusChange(it))},
+                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                singleLine = true
             )
-            TextField(
-                value = viewModel.description,
-                onValueChange = { onEvent(ViewModelEvent.DescriptionChange(it)) },
-                placeholder = { Text(text = "Notes") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 80.dp, max = 200.dp),
-                singleLine = false,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = viewModel.backgroundColor
-                )
+            HintTextField(
+                text = contentState.text,
+                textStyle = MaterialTheme.typography.body1,
+                onValueChange = { onEvent(ContentChange(it)) },
+                hint = contentState.hint,
+                isHintVisible = contentState.isHintVisible,
+                onFocusChange = { onEvent(ContentFocusChange(it)) },
+                modifier = Modifier.fillMaxWidth().padding(10.dp)
             )
         }
         Row(

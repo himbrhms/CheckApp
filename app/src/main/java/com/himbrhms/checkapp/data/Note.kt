@@ -9,8 +9,8 @@ import com.himbrhms.checkapp.ui.theme.longValue
 data class Note(
     @PrimaryKey val id: Int? = null,
     val title: String,
-    val notes: String = "",
-    val backgroundColorValue: Long = Color.White.longValue
+    val content: String = "",
+    val colorValue: Long = Color.White.longValue
 ) {
-    override fun toString(): String = "Note(id=$id, title=$title)"
+    override fun toString(): String = "Note(id=$id, title=$title, colorValue=$colorValue)"
 }

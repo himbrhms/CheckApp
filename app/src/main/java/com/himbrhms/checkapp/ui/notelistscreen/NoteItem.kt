@@ -6,11 +6,7 @@ import androidx.compose.foundation.border
 import com.himbrhms.checkapp.data.Note
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
 import com.himbrhms.checkapp.ui.theme.ColorL
 
 @Composable
@@ -37,7 +32,7 @@ internal fun NoteItem(
                 shape = RoundedCornerShape(10.dp)
             )
             .clip(RoundedCornerShape(10.dp))
-            .background(ColorL(note.backgroundColorValue))
+            .background(ColorL(note.colorValue))
     ) {
         Row(
             modifier = modifier,
@@ -56,7 +51,7 @@ internal fun NoteItem(
                         fontWeight = FontWeight.Bold,
                     )
                 }
-                note.notes.let {
+                note.content.let {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(text = it)
                 }
@@ -72,8 +67,8 @@ private fun ComposablePreview() {
         Note(
             id = 1,
             title = "Preview",
-            notes = "Notes",
-            backgroundColorValue = Color.White.value.toLong()
+            content = "Notes",
+            colorValue = Color.White.value.toLong()
         )
     )
 }

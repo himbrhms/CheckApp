@@ -1,6 +1,7 @@
 package com.himbrhms.checkapp.common.di
 
 import android.app.Application
+import android.content.Context
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.room.Room
 import com.himbrhms.checkapp.data.NoteCache
@@ -13,6 +14,8 @@ import com.himbrhms.checkapp.viewmodel.OnNoteListScreen
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -32,5 +35,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNoteActionManager(noteListRepo: NoteListRepo) = NoteActionManager(noteListRepo)
+    fun provideNoteActionManager(
+        noteListRepo: NoteListRepo,
+        @ApplicationContext context: Context
+    ) = NoteActionManager(noteListRepo, context)
 }

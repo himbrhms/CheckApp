@@ -9,12 +9,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.ShowHideColorPickerSheet
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.PopBackStack
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.ShowToast
 import com.himbrhms.checkapp.viewmodel.EditNoteViewModel
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
 import com.himbrhms.checkapp.util.Logger
+import com.himbrhms.checkapp.viewmodel.events.UiEvent
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
 @ExperimentalMaterialApi

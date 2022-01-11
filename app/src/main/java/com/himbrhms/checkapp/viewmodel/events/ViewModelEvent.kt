@@ -1,6 +1,8 @@
 package com.himbrhms.checkapp.viewmodel.events
 
+import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.ViewModel
 import com.himbrhms.checkapp.data.Note
 
 sealed class ViewModelEvent {
@@ -18,7 +20,7 @@ sealed class ViewModelEvent {
         override val name: String = this::class.java.simpleName
     }
 
-    object OnShareNotes: ViewModelEvent() {
+    object ShareSelectedNotes: ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 
@@ -38,7 +40,15 @@ sealed class ViewModelEvent {
         override val name: String = this::class.java.simpleName
     }
 
-    data class DescriptionChange(val description: String): ViewModelEvent() {
+    data class TitleFocusChange(val focusState: FocusState): ViewModelEvent() {
+        override val name: String = this::class.java.simpleName
+    }
+
+    data class ContentFocusChange(val focusState: FocusState): ViewModelEvent() {
+        override val name: String = this::class.java.simpleName
+    }
+
+    data class ContentChange(val content: String): ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 

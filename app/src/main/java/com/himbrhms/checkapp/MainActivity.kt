@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         private val logger = Logger(this::class.className)
     }
 
-    @ExperimentalAnimationApi
+    @ExperimentalAnimationApi // AnimatedVisibility
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi // ModalBottomSheetLayout
     override fun onCreate(savedInstanceState: Bundle?) {

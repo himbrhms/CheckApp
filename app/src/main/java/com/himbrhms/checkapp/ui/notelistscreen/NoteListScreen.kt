@@ -87,7 +87,7 @@ fun NoteListScreen(
                     FloatingActionButton(
                         onClick = {
                             selectedNotes.clear()
-                            viewModel.onEvent(ViewModelEvent.OnShareNotes)
+                            viewModel.onEvent(ViewModelEvent.ShareSelectedNotes)
                         },
                         modifier = Modifier.scale(0.8f),
                         backgroundColor = Color.DesertSand,

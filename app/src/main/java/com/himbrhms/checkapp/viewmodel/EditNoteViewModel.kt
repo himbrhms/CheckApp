@@ -1,5 +1,6 @@
 package com.himbrhms.checkapp.viewmodel
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,10 +15,11 @@ import com.himbrhms.checkapp.viewmodel.events.UiEvent.ShowToast
 import com.himbrhms.checkapp.data.Note
 import com.himbrhms.checkapp.data.NoteListRepo
 import com.himbrhms.checkapp.model.NoteActionManager
+import com.himbrhms.checkapp.ui.editnotescreen.NoteTextFieldState
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ColorChange
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.DeleteSelectedNotes
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.DescriptionChange
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ContentChange
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ToggleColorPickerBottomSheet
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.SaveNote
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.TitleChange
@@ -43,14 +45,17 @@ class EditNoteViewModel @Inject constructor(
         private val logger = Logger(this::class.className)
     }
 
+    /*private val _noteColor = mutableStateOf(Note.noteColors.random().toArgb())
+    val noteColor: State<Int> = _noteColor*/
+
     var repoNote by mutableStateOf<Note?>(null)
         private set
 
-    var title by mutableStateOf("")
-        private set
+    private val _noteTitle = mutableStateOf(NoteTextFieldState(hint = "Title"))
+    val noteTitle: State<NoteTextFieldState> = this._noteTitle
 
-    var description by mutableStateOf("")
-        private set
+    private var _noteContent = mutableStateOf(NoteTextFieldState(hint = "Notes"))
+    val noteContent: State<NoteTextFieldState> = this._noteContent
 
     var backgroundColor by mutableStateOf(Color.LightDesertSand)
         private set
@@ -63,10 +68,16 @@ class EditNoteViewModel @Inject constructor(
         if (itemId != -1) {
             viewModelScope.launch {
                 repo.getNoteById(itemId)?.let { note ->
-                    title = note.title
-                    description = note.notes ?: ""
+                    _noteTitle.value = noteTitle.value.copy(
+                        text = note.title,
+                        isHintVisible = false
+                    )
+                    _noteContent.value = noteContent.value.copy(
+                        text = note.content,
+                        isHintVisible = false
+                    )
                     this@EditNoteViewModel.repoNote = note
-                    backgroundColor = ColorL(note.backgroundColorValue)
+                    backgroundColor = ColorL(note.colorValue)
                 }
             }
         }
@@ -76,10 +87,20 @@ class EditNoteViewModel @Inject constructor(
         logger.debug("onEvent(${event.name})")
         when (event) {
             is TitleChange -> {
-                title = event.title
+                _noteTitle.value = noteTitle.value.copy(text = event.title)
             }
-            is DescriptionChange -> {
-                description = event.description
+            is ViewModelEvent.TitleFocusChange -> {
+                _noteTitle.value = noteTitle.value.copy(
+                    isHintVisible = !event.focusState.isFocused && noteTitle.value.text.isBlank()
+                )
+            }
+            is ContentChange -> {
+                _noteContent.value = noteContent.value.copy(text = event.content)
+            }
+            is ViewModelEvent.ContentFocusChange -> {
+                _noteContent.value = noteContent.value.copy(
+                    isHintVisible = !event.focusState.isFocused && noteContent.value.text.isBlank()
+                )
             }
             is DeleteSelectedNotes -> {
                 send(PopBackStack) // back to NoteListScreen
@@ -87,7 +108,10 @@ class EditNoteViewModel @Inject constructor(
                     send(ShowToast(message = "Empty Note dismissed"))
                     return
                 }
-                val noteToDelete = Note(repoNote?.id, title, description, backgroundColor.longValue)
+                val noteToDelete = Note(
+                    repoNote?.id,
+                    _noteTitle.value.text, _noteContent.value.text, backgroundColor.longValue
+                )
                 viewModelScope.launch { actionManager.onDeleteEditedNote(noteToDelete) }
                 NoteListViewModel.onNoteListScreen?.showSnackBar(
                     message = "Note deleted",
@@ -99,10 +123,10 @@ class EditNoteViewModel @Inject constructor(
                     if (!isEmptyNote()) {
                         repo.insertNote(
                             Note(
-                                title = title,
-                                notes = description,
+                                title = _noteTitle.value.text,
+                                content = _noteContent.value.text,
                                 id = repoNote?.id,
-                                backgroundColorValue = backgroundColor.longValue
+                                colorValue = backgroundColor.longValue
                             )
                         )
                     } else {
@@ -123,7 +147,7 @@ class EditNoteViewModel @Inject constructor(
     }
 
     private fun isEmptyNote(): Boolean {
-        return this.title.isBlank() && description.isBlank()
+        return this._noteTitle.value.text.isBlank() && this._noteContent.value.text.isBlank()
     }
 
     private fun send(event: UiEvent) = viewModelScope.launch { _uiEvent.send(event) }

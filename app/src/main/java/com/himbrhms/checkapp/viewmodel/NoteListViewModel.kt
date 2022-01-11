@@ -26,6 +26,7 @@ class NoteListViewModel @Inject constructor(
 
     companion object {
         private val logger = Logger(this::class.className)
+
         // TODO: How to show SnackBar on another Screen/ViewModel?
         //  changing coroutine scope did not work
         var onNoteListScreen: OnNoteListScreen? = null // a little bit dirty...
@@ -60,6 +61,7 @@ class NoteListViewModel @Inject constructor(
             is ViewModelEvent.CopySelectedNotes -> {
                 viewModelScope.launch { actionManager.onCopySelectedNotes() }
             }
+            is ViewModelEvent.ShareSelectedNotes -> actionManager.onShareSelectedNotes()
             else -> logger.warn("onEvent: event=${event.name} unhandled")
         }
     }
@@ -68,5 +70,5 @@ class NoteListViewModel @Inject constructor(
         send(ShowSnackBar("Notes deleted", action = "UNDO"))
     }
 
-    private fun send(uiEvent: UiEvent) =viewModelScope.launch { _uiEvent.send(uiEvent) }
+    private fun send(uiEvent: UiEvent) = viewModelScope.launch { _uiEvent.send(uiEvent) }
 }
