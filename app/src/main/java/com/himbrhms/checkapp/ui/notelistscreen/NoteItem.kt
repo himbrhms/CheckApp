@@ -7,17 +7,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.himbrhms.checkapp.ui.theme.ColorL
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
+import com.himbrhms.checkapp.ui.theme.colorFromLong
 
 @ExperimentalFoundationApi
 @Composable
@@ -35,7 +31,7 @@ internal fun NoteItem(
                 shape = RoundedCornerShape(10.dp)
             )
             .clip(RoundedCornerShape(10.dp))
-            .background(ColorL(note.colorValue))
+            .background(colorFromLong(note.colorValue))
             .combinedClickable(onClick = onClick, onLongClick = onLongClick)
     ) {
         Column(

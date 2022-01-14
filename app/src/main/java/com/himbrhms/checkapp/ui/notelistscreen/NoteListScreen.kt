@@ -31,6 +31,7 @@ import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ClickOnNote
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.UndoDeletedNotes
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.LongClickOnNote
 import com.himbrhms.checkapp.ui.theme.DesertSand
+import com.himbrhms.checkapp.ui.util.DesertFAB
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -84,72 +85,48 @@ fun NoteListScreen(
                     enter = expandVertically(),
                     exit = shrinkVertically()
                 ) {
-                    FloatingActionButton(
+                    DesertFAB(
                         onClick = {
                             selectedNotes.clear()
                             viewModel.onEvent(ViewModelEvent.ShareSelectedNotes)
                         },
-                        modifier = Modifier.scale(0.8f),
-                        backgroundColor = Color.DesertSand,
-                    ) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_baseline_share_24),
-                            contentDescription = "Share",
-                            modifier = Modifier.scale(1.4f)
-                        )
-                    }
+                        contentDescription = "Share",
+                        drawableRes = R.drawable.ic_baseline_share_24
+                    )
                 }
                 AnimatedVisibility(
                     visible = buttonsVisible.value,
                     enter = expandVertically(),
                     exit = shrinkVertically()
                 ) {
-                    FloatingActionButton(
+                    DesertFAB(
                         onClick = {
                             selectedNotes.clear()
                             viewModel.onEvent(ViewModelEvent.CopySelectedNotes)
                         },
-                        modifier = Modifier.scale(0.8f),
-                        backgroundColor = Color.DesertSand,
-                    ) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_baseline_content_copy_24),
-                            contentDescription = "Copy",
-                            modifier = Modifier.scale(1.4f)
-                        )
-                    }
+                        contentDescription = "Copy",
+                        drawableRes = R.drawable.ic_baseline_content_copy_24
+                    )
                 }
                 AnimatedVisibility(
                     visible = buttonsVisible.value,
                     enter = expandVertically(),
                     exit = shrinkVertically()
                 ) {
-                    FloatingActionButton(
+                    DesertFAB(
                         onClick = {
                             selectedNotes.clear()
                             viewModel.onEvent(ViewModelEvent.DeleteSelectedNotes)
                         },
-                        modifier = Modifier.scale(0.8f),
-                        backgroundColor = Color.DesertSand,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Delete,
-                            contentDescription = "Delete",
-                            modifier = Modifier.scale(1.4f)
-                        )
-                    }
-                }
-                FloatingActionButton(
-                    onClick = { viewModel.onEvent(AddNote) },
-                    modifier = Modifier.scale(0.8f),
-                    backgroundColor = Color.DesertSand,
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_baseline_post_add_24),
-                        contentDescription = "Add Note",
-                        modifier = Modifier.scale(1.4f)
+                        contentDescription = "Delete",
+                        drawableRes = R.drawable.ic_outline_delete_24
                     )
                 }
+                DesertFAB(
+                    onClick = { viewModel.onEvent(AddNote) },
+                    contentDescription = "Add Note",
+                    drawableRes = R.drawable.ic_baseline_post_add_24
+                )
             }
         }
     ) {

@@ -52,7 +52,7 @@ sealed class ViewModelEvent {
         override val name: String = this::class.java.simpleName
     }
 
-    object ToggleColorPickerBottomSheet: ViewModelEvent() {
+    object ColorPickerBottomSheet: ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }
 

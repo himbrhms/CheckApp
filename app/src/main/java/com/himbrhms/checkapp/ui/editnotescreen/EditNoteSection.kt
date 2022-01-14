@@ -16,8 +16,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewModelScope
 import com.himbrhms.checkapp.R
+import com.himbrhms.checkapp.ui.categories.CategorySection
 import com.himbrhms.checkapp.viewmodel.EditNoteViewModel
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ContentChange
@@ -25,9 +25,8 @@ import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ContentFocusChange
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.TitleChange
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.TitleFocusChange
 import com.himbrhms.checkapp.ui.theme.DesertSand
+import com.himbrhms.checkapp.ui.util.DesertFAB
 import com.himbrhms.checkapp.ui.util.HintTextField
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
 @Composable
@@ -64,6 +63,7 @@ internal fun EditNoteSection(
                     .padding(10.dp),
                 singleLine = true
             )
+            CategorySection(chips = listOf("Sport", "Food", "ADD"))
             HintTextField(
                 text = contentState.text,
                 textStyle = MaterialTheme.typography.body1,
@@ -83,69 +83,31 @@ internal fun EditNoteSection(
                 .wrapContentHeight()
                 .padding(4.dp)
         ) {
-            FloatingActionButton(
-                onClick = { onEvent(ViewModelEvent.ToggleColorPickerBottomSheet) },
-                modifier = Modifier.scale(0.8f),
-                backgroundColor = Color.DesertSand,
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_outline_color_lens_24),
-                    contentDescription = "Colorize",
-                    modifier = Modifier.scale(1.4f)
-                )
-            }
+            DesertFAB(
+                onClick = { onEvent(ViewModelEvent.ColorPickerBottomSheet) },
+                contentDescription = "Color Picker",
+                drawableRes = R.drawable.ic_outline_color_lens_24
+            )
             Spacer(Modifier.weight(1f))
-            FloatingActionButton(
+            DesertFAB(
                 onClick = { onEvent(ViewModelEvent.OnAddImage) },
-                modifier = Modifier.scale(0.8f),
-                backgroundColor = Color.DesertSand,
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_outline_add_photo_alternate_24),
-                    contentDescription = "Add Picture",
-                    modifier = Modifier.scale(1.4f)
-                )
-            }
-            Spacer(Modifier.weight(1f))
-            FloatingActionButton(
-                onClick = { onEvent(ViewModelEvent.ToggleGroupingBottomSheet) },
-                modifier = Modifier.scale(0.8f),
-                backgroundColor = Color.DesertSand,
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_outline_create_new_folder_24),
-                    contentDescription = "Add Group",
-                    modifier = Modifier.scale(1.4f)
-                )
-            }
+                contentDescription = "Add Picture",
+                drawableRes = R.drawable.ic_outline_add_photo_alternate_24
+            )
             Spacer(Modifier.weight(1f))
             Column() {
-                FloatingActionButton(
-                    onClick = {
-                        onEvent(ViewModelEvent.DeleteSelectedNotes)
-                    },
-                    modifier = Modifier.scale(0.8f),
-                    backgroundColor = Color.DesertSand,
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Delete,
-                        contentDescription = "Delete",
-                        modifier = Modifier.scale(1.4f)
-                    )
-                }
-            }
-            Spacer(Modifier.weight(24f))
-            FloatingActionButton(
-                onClick = { onEvent(ViewModelEvent.SaveNote) },
-                backgroundColor = Color.DesertSand,
-                modifier = Modifier.scale(0.8f),
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Check,
-                    contentDescription = "Check",
-                    modifier = Modifier.scale(1.4f)
+                DesertFAB(
+                    onClick = { onEvent(ViewModelEvent.DeleteSelectedNotes) },
+                    contentDescription = "Delete",
+                    drawableRes = R.drawable.ic_outline_delete_24
                 )
             }
+            Spacer(Modifier.weight(24f))
+            DesertFAB(
+                onClick = { onEvent(ViewModelEvent.SaveNote) },
+                contentDescription = "Check",
+                drawableRes = R.drawable.ic_baseline_check_24
+            )
         }
     }
 }

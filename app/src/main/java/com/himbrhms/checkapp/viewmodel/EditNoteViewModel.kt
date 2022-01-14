@@ -21,10 +21,10 @@ import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ColorChange
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.DeleteSelectedNotes
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ContentChange
-import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ToggleColorPickerBottomSheet
+import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.ColorPickerBottomSheet
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.SaveNote
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.TitleChange
-import com.himbrhms.checkapp.ui.theme.ColorL
+import com.himbrhms.checkapp.ui.theme.colorFromLong
 import com.himbrhms.checkapp.ui.theme.LightDesertSand
 import com.himbrhms.checkapp.ui.theme.longValue
 import com.himbrhms.checkapp.util.Logger
@@ -81,7 +81,7 @@ class EditNoteViewModel @Inject constructor(
                         isHintVisible = false
                     )
                     this@EditNoteViewModel.repoNote = note
-                    backgroundColor = ColorL(note.colorValue)
+                    backgroundColor = colorFromLong(note.colorValue)
                 }
             }
         }
@@ -142,7 +142,7 @@ class EditNoteViewModel @Inject constructor(
                     send(PopBackStack)
                 }
             }
-            is ToggleColorPickerBottomSheet -> {
+            is ColorPickerBottomSheet -> {
                 send(ShowHideColorPickerSheet)
             }
             is ViewModelEvent.ToggleGroupingBottomSheet -> {
