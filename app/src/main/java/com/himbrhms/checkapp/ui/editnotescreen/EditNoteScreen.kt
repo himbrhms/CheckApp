@@ -9,14 +9,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.ShowHideColorPickerSheet
+import com.himbrhms.checkapp.viewmodel.events.UiEvent.ShowHideGroupingBottomSheet
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.PopBackStack
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.ShowToast
 import com.himbrhms.checkapp.viewmodel.EditNoteViewModel
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
 import com.himbrhms.checkapp.util.Logger
-import com.himbrhms.checkapp.viewmodel.events.UiEvent
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
@@ -26,7 +25,6 @@ fun EditNoteScreen(
     onPopBackStack: () -> Unit,
     viewModel: EditNoteViewModel = hiltViewModel()
 ) {
-    val logger = Logger("EditItemScreen")
     val scaffoldState = rememberScaffoldState()
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
@@ -37,11 +35,13 @@ fun EditNoteScreen(
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
                 is ShowHideColorPickerSheet -> {
-                    logger.info("ColorizeBottomSheetEvent: isVisible=${colorBottomSheetState?.isVisible}")
-                    if (colorBottomSheetState?.isVisible == true) {
-                        colorBottomSheetState?.hide()
-                    } else if (colorBottomSheetState?.isVisible == false) {
-                        colorBottomSheetState?.show()
+                    colorBottomSheetState?.let { sheet ->
+                        if (sheet.isVisible) sheet.hide() else sheet.show()
+                    }
+                }
+                is ShowHideGroupingBottomSheet -> {
+                    groupingBottomSheetState?.let { sheet ->
+                        if (sheet.isVisible) sheet.hide() else sheet.show()
                     }
                 }
                 else -> Unit
@@ -60,6 +60,7 @@ fun EditNoteScreen(
             viewModel.onEvent(event)
         }
         ColorPickerBottomSheet()
+        GroupingBottomSheet()
     }
 }
 

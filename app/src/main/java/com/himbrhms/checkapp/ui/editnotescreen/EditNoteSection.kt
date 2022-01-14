@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.himbrhms.checkapp.R
 import com.himbrhms.checkapp.viewmodel.EditNoteViewModel
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent
@@ -25,7 +26,10 @@ import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.TitleChange
 import com.himbrhms.checkapp.viewmodel.events.ViewModelEvent.TitleFocusChange
 import com.himbrhms.checkapp.ui.theme.DesertSand
 import com.himbrhms.checkapp.ui.util.HintTextField
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
+@ExperimentalMaterialApi
 @Composable
 internal fun EditNoteSection(
     viewModel: EditNoteViewModel,
@@ -34,7 +38,7 @@ internal fun EditNoteSection(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp),
+            .padding(4.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
@@ -54,8 +58,10 @@ internal fun EditNoteSection(
                 onValueChange = { onEvent(TitleChange(it)) },
                 hint = titleState.hint,
                 isHintVisible = titleState.isHintVisible,
-                onFocusChange = { onEvent(TitleFocusChange(it))},
-                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                onFocusChange = { onEvent(TitleFocusChange(it)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
                 singleLine = true
             )
             HintTextField(
@@ -65,7 +71,9 @@ internal fun EditNoteSection(
                 hint = contentState.hint,
                 isHintVisible = contentState.isHintVisible,
                 onFocusChange = { onEvent(ContentFocusChange(it)) },
-                modifier = Modifier.fillMaxWidth().padding(10.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
             )
         }
         Row(
@@ -94,7 +102,19 @@ internal fun EditNoteSection(
             ) {
                 Icon(
                     painterResource(id = R.drawable.ic_outline_add_photo_alternate_24),
-                    contentDescription = "Add Picturee",
+                    contentDescription = "Add Picture",
+                    modifier = Modifier.scale(1.4f)
+                )
+            }
+            Spacer(Modifier.weight(1f))
+            FloatingActionButton(
+                onClick = { onEvent(ViewModelEvent.ToggleGroupingBottomSheet) },
+                modifier = Modifier.scale(0.8f),
+                backgroundColor = Color.DesertSand,
+            ) {
+                Icon(
+                    painterResource(id = R.drawable.ic_outline_create_new_folder_24),
+                    contentDescription = "Add Group",
                     modifier = Modifier.scale(1.4f)
                 )
             }
@@ -114,7 +134,7 @@ internal fun EditNoteSection(
                     )
                 }
             }
-            Spacer(Modifier.weight(20f))
+            Spacer(Modifier.weight(24f))
             FloatingActionButton(
                 onClick = { onEvent(ViewModelEvent.SaveNote) },
                 backgroundColor = Color.DesertSand,

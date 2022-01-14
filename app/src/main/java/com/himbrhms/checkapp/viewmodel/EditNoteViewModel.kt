@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.himbrhms.checkapp.viewmodel.events.UiEvent
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.PopBackStack
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.ShowHideColorPickerSheet
+import com.himbrhms.checkapp.viewmodel.events.UiEvent.ShowHideGroupingBottomSheet
 import com.himbrhms.checkapp.viewmodel.events.UiEvent.ShowToast
 import com.himbrhms.checkapp.data.Note
 import com.himbrhms.checkapp.data.NoteListRepo
@@ -45,9 +46,7 @@ class EditNoteViewModel @Inject constructor(
         private val logger = Logger(this::class.className)
     }
 
-    /*private val _noteColor = mutableStateOf(Note.noteColors.random().toArgb())
-    val noteColor: State<Int> = _noteColor*/
-
+    // TODO: just note id required
     var repoNote by mutableStateOf<Note?>(null)
         private set
 
@@ -57,6 +56,11 @@ class EditNoteViewModel @Inject constructor(
     private var _noteContent = mutableStateOf(NoteTextFieldState(hint = "Notes"))
     val noteContent: State<NoteTextFieldState> = this._noteContent
 
+    // TODO: Implement Note grouping
+    private val _noteGroup = mutableStateOf(NoteTextFieldState(hint = "Group"))
+    val noteGroup: State<NoteTextFieldState> = this._noteGroup
+
+    // TODO: refactor
     var backgroundColor by mutableStateOf(Color.LightDesertSand)
         private set
 
@@ -68,7 +72,7 @@ class EditNoteViewModel @Inject constructor(
         if (itemId != -1) {
             viewModelScope.launch {
                 repo.getNoteById(itemId)?.let { note ->
-                    _noteTitle.value = noteTitle.value.copy(
+                    _noteGroup.value = noteGroup.value.copy(
                         text = note.title,
                         isHintVisible = false
                     )
@@ -87,11 +91,11 @@ class EditNoteViewModel @Inject constructor(
         logger.debug("onEvent(${event.name})")
         when (event) {
             is TitleChange -> {
-                _noteTitle.value = noteTitle.value.copy(text = event.title)
+                _noteGroup.value = noteGroup.value.copy(text = event.title)
             }
             is ViewModelEvent.TitleFocusChange -> {
-                _noteTitle.value = noteTitle.value.copy(
-                    isHintVisible = !event.focusState.isFocused && noteTitle.value.text.isBlank()
+                _noteGroup.value = noteGroup.value.copy(
+                    isHintVisible = !event.focusState.isFocused && noteGroup.value.text.isBlank()
                 )
             }
             is ContentChange -> {
@@ -110,7 +114,10 @@ class EditNoteViewModel @Inject constructor(
                 }
                 val noteToDelete = Note(
                     repoNote?.id,
-                    _noteTitle.value.text, _noteContent.value.text, backgroundColor.longValue
+                    _noteGroup.value.text,
+                    _noteContent.value.text,
+                    _noteGroup.value.text,
+                    backgroundColor.longValue
                 )
                 viewModelScope.launch { actionManager.onDeleteEditedNote(noteToDelete) }
                 NoteListViewModel.onNoteListScreen?.showSnackBar(
@@ -123,7 +130,7 @@ class EditNoteViewModel @Inject constructor(
                     if (!isEmptyNote()) {
                         repo.insertNote(
                             Note(
-                                title = _noteTitle.value.text,
+                                title = _noteGroup.value.text,
                                 content = _noteContent.value.text,
                                 id = repoNote?.id,
                                 colorValue = backgroundColor.longValue
@@ -138,6 +145,9 @@ class EditNoteViewModel @Inject constructor(
             is ToggleColorPickerBottomSheet -> {
                 send(ShowHideColorPickerSheet)
             }
+            is ViewModelEvent.ToggleGroupingBottomSheet -> {
+                send(ShowHideGroupingBottomSheet)
+            }
             is ColorChange -> {
                 backgroundColor = event.color
                 send(ShowHideColorPickerSheet)
@@ -147,7 +157,7 @@ class EditNoteViewModel @Inject constructor(
     }
 
     private fun isEmptyNote(): Boolean {
-        return this._noteTitle.value.text.isBlank() && this._noteContent.value.text.isBlank()
+        return this._noteGroup.value.text.isBlank() && this._noteContent.value.text.isBlank()
     }
 
     private fun send(event: UiEvent) = viewModelScope.launch { _uiEvent.send(event) }

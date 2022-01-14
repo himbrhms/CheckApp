@@ -56,6 +56,10 @@ sealed class ViewModelEvent {
         override val name: String = this::class.java.simpleName
     }
 
+    object ToggleGroupingBottomSheet: ViewModelEvent() {
+        override val name: String = this::class.java.simpleName
+    }
+
     object OnAddImage: ViewModelEvent() {
         override val name: String = this::class.java.simpleName
     }

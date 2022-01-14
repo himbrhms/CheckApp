@@ -167,19 +167,14 @@ fun NoteListScreen(
                     } else {
                         BorderStroke(width = 2.dp, color = Color.LightGray)
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .combinedClickable(
-                            onClick = { viewModel.onEvent(ClickOnNote(note)) },
-                            onLongClick = {
-                                selectedNotes.apply {
-                                    if (contains(note.id)) remove(note.id) else add(note.id)
-                                }
-                                buttonsVisible.value = !selectedNotes.isEmpty()
-                                viewModel.onEvent(LongClickOnNote(note))
-                            }
-                        )
-                        .padding(16.dp)
+                    onClick = { viewModel.onEvent(ClickOnNote(note)) },
+                    onLongClick = {
+                        selectedNotes.apply {
+                            if (contains(note.id)) remove(note.id) else add(note.id)
+                        }
+                        buttonsVisible.value = !selectedNotes.isEmpty()
+                        viewModel.onEvent(LongClickOnNote(note))
+                    }
                 )
             }
         }

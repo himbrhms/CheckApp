@@ -10,6 +10,7 @@ data class Note(
     @PrimaryKey val id: Int? = null,
     val title: String,
     val content: String = "",
+    val group: String = "",
     val colorValue: Long = Color.White.longValue
 ) {
     override fun toString(): String = "Note(id=$id, title=$title, colorValue=$colorValue)"
